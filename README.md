@@ -140,13 +140,3 @@ log.debug("Model state", weights=w)
 
 ---
 
-## Hosting Your Repository on GitHub
-
-To track your commit history remotely and host your repository on GitHub:
-
-1. Create a private repository on [GitHub](https://github.com) (do not initialize with a README, `.gitignore`, or license).
-2. Configure your remote origin and push the `main` branch:
-   ```bash
-   git remote add origin <YOUR_REPOSITORY_URL>
-   git push -u origin main
-   ```

@@ -2,12 +2,6 @@
 
 This repository provides the development environment, baseline templates, and submission tooling for programming assignments in **ECE472 (Deep Learning)** at The Cooper Union. It uses a pure-Python workflow managed with `uv`, task automation via `just`, modular Flax NNX / JAX package templates, and an automated HTML submission generator with embedded vector SVG plots.
 
----
-
-> **Note on Repository Usage and Portfolio Presentation**  
-> This document functions as an operational guide for setup, assignment lifecycle, and submission workflows during the semester. If you make this repository public as part of your technical portfolio, you are encouraged to replace this root `README.md` with a project overview that documents your implementations, experimental results, loss curves, and architectural comparisons across the coursework.
-
----
 
 ## Platform Requirements
 
@@ -41,21 +35,6 @@ The workflow requires three system-level tools:
 3. **`pango`** (Native C library for automated PDF compilation via `just submission`):
    - macOS (Homebrew): `brew install pango`
    - Linux / WSL2: `sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0`
-### 2. Configure Local Git Identity
-
-Configure your full name and Cooper Union email locally within this repository:
-
-```bash
-git config user.name "Your Full Name"
-git config user.email "your.name@cooper.edu"
-```
-Assignment scaffolding (`just new`) and submission compilation (`just html` / `just pdf`) use these settings to attribute assignments in `pyproject.toml` and watermark generated submission reports with running headers containing your name and email on every page. The build pipeline will reject submissions if placeholder values or non-Cooper email addresses are detected.
-*(Optional)* **Pre-commit Hooks**: Install pre-commit hooks to automatically format and lint code on commit:
-```bash
-uvx pre-commit install
-```
-
----
 
 ## Assignment Lifecycle
 

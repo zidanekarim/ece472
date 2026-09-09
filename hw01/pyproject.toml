@@ -3,7 +3,7 @@
 [project]
 name = "hw01"
 version = "0.1.0"
-description = "My new homework assignment."
+description = "Linear Regression of Noisy Sin Wave"
 readme = "README.md"
 authors = [
     { name = "Zidane Karim", email = "zidane.karim@cooper.edu" }

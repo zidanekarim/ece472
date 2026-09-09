@@ -45,6 +45,7 @@ class TrainingSettings(BaseModel):
     learning_rate: float = Field(
         default=0.1, gt=0.0, description="Learning rate for Adam optimizer"
     )
+    M: int = Field(default=6, gt=0, description="number of gaussian curves")
 
 
 class PlottingSettings(BaseModel):

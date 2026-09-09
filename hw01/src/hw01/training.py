@@ -6,18 +6,21 @@ from tqdm import trange
 
 from .config import TrainingSettings
 from .data import Data
-from .model import NNXLinearModel
+from .model import NNXLinearModel, NNXRegressionModel
 
 log = structlog.get_logger()
 
 
 @nnx.jit
 def train_step(
-    model: NNXLinearModel, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
+    model: NNXRegressionModel,
+    optimizer: nnx.Optimizer,
+    x: jnp.ndarray,
+    y: jnp.ndarray,  # changed here to NNXRegressionModel
 ):
     """Performs a single training step."""
 
-    def loss_fn(model: NNXLinearModel):
+    def loss_fn(model: NNXRegressionModel):
         y_hat = model(x)
         return 0.5 * jnp.mean((y_hat - y) ** 2)
 
@@ -27,7 +30,7 @@ def train_step(
 
 
 def train(
-    model: NNXLinearModel,
+    model: NNXRegressionModel,
     optimizer: nnx.Optimizer,
     data: Data,
     settings: TrainingSettings,

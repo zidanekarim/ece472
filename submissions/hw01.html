@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission: hw01</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-alt: #f1f5f9;
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --code-bg: #ffffff;
+            --badge-bg: #e2e8f0;
+            --badge-text: #334155;
+            --radius: 8px;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0b0f19;
+                --surface: #131b2e;
+                --surface-alt: #1e293b;
+                --border: #334155;
+                --border-hover: #475569;
+                --text: #f8fafc;
+                --text-muted: #94a3b8;
+                --primary: #3b82f6;
+                --primary-hover: #60a5fa;
+                --primary-light: #1e3a8a;
+                --code-bg: #0f172a;
+                --badge-bg: #1e293b;
+                --badge-text: #cbd5e1;
+            }
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .header-info h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 0.35rem;
+        }
+
+        .author-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+        }
+
+        .author-tag {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .email-tag {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--surface-alt);
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            background: var(--surface-alt);
+            border-color: var(--border-hover);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Navigation / TOC */
+        .toc-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .toc-panel h2 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.65rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.8125rem;
+            transition: all 0.15s ease;
+        }
+
+        .toc-link:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .toc-link code {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+        }
+
+        .toc-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Section Headings */
+        .section-header {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+        }
+
+        /* File Cards */
+        .file-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: border-color 0.15s ease;
+        }
+
+        .file-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        summary, .file-summary {
+            list-style: none !important;
+        }
+
+        summary::-webkit-details-marker, .file-summary::-webkit-details-marker {
+            display: none !important;
+        }
+
+        summary::marker, .file-summary::marker {
+            display: none !important;
+            content: "" !important;
+        }
+
+        .file-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            list-style: none !important;
+        }
+
+        .file-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .chevron {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-right: 2px solid var(--text-muted);
+            border-bottom: 2px solid var(--text-muted);
+            transform: rotate(-45deg);
+            transition: transform 0.2s ease;
+            margin-right: 2px;
+            flex-shrink: 0;
+        }
+
+        details[open] > .file-summary .chevron {
+            transform: rotate(45deg);
+        }
+
+        .file-name {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .badges-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            white-space: nowrap;
+        }
+
+        .badge-plot {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-md {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .badge-md {
+                background: #78350f;
+                color: #fde68a;
+            }
+        }
+
+        /* Markdown rendering */
+        .markdown-body {
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 0.9375rem;
+            line-height: 1.65;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text);
+        }
+
+        .markdown-body h1 {
+            font-size: 1.35rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .markdown-body h2 {
+            font-size: 1.15rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .markdown-body h3 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .markdown-body h1:first-child,
+        .markdown-body h2:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-body hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 1.25rem 0;
+        }
+
+        .markdown-body ul,
+        .markdown-body ol {
+            padding-left: 1.75rem;
+        }
+
+        .markdown-body li + li {
+            margin-top: 0.25rem;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--primary);
+            padding: 0.5rem 1rem;
+            color: var(--text-muted);
+            background: var(--surface-alt);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+        }
+
+        .markdown-body th,
+        .markdown-body td {
+            border: 1px solid var(--border);
+            padding: 0.6rem 0.85rem;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background: var(--surface-alt);
+            font-weight: 600;
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background: var(--surface-alt);
+        }
+
+        .markdown-body :not(pre) > code {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.85em;
+            background: var(--surface-alt);
+            padding: 0.15em 0.35em;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .markdown-body pre code,
+        .highlight pre code,
+        pre code {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .markdown-body .highlight {
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+            background: #ffffff !important;
+        }
+
+        /* Code display */
+        .file-content {
+            background: #ffffff !important;
+            overflow-x: auto;
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+            line-height: 1.55;
+        }
+
+        .highlight {
+            background: #ffffff !important;
+            padding: 0.75rem 0;
+        }
+
+        .highlight pre {
+            background: #ffffff !important;
+            margin: 0;
+            padding: 0 1rem;
+            white-space: pre;
+            word-wrap: normal;
+        }
+
+        .linenos {
+            color: var(--text-muted);
+            opacity: 0.6;
+            margin-right: 1.25rem;
+            user-select: none;
+            display: inline-block;
+            min-width: 2.25rem;
+            text-align: right;
+        }
+
+        /* Artifacts & SVGs */
+        .artifact-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .artifact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .artifact-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .artifact-name {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.875rem;
+        }
+
+        .svg-container {
+            padding: 1.5rem;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Pygments Syntax Theme Integration */
+        pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+
+        /* Ensure code backgrounds remain pure white even after Pygments theme rules */
+        .highlight, .highlight pre, .file-content, .markdown-body .highlight, code, pre {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Print Media Stylesheet */
+        @media print {
+            @page {
+                size: letter;
+                margin: 0.9in 0.5in 0.65in 0.5in;
+                @top-left {
+                    content: "ECE472 \2022  hw01";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 8pt;
+                    font-weight: 600;
+                    line-height: 1.6;
+                    color: #475569;
+                    vertical-align: bottom;
+                }
+                @top-right {
+                    content: "Zidane Karim <zkarim7676@gmail.com>";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 8pt;
+                    font-weight: 600;
+                    line-height: 1.6;
+                    color: #475569;
+                    vertical-align: bottom;
+                }
+                @bottom-left {
+                    content: "Generated: 2026-09-09 17:01:34";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 7.5pt;
+                    line-height: 1.5;
+                    color: #94a3b8;
+                }
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 7.5pt;
+                    line-height: 1.5;
+                    color: #94a3b8;
+                }
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                font-size: 9pt !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .toolbar, .toc-panel, .btn {
+                display: none !important;
+            }
+
+            .header {
+                background: #ffffff !important;
+                border: 1px solid #999999 !important;
+                box-shadow: none !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            .section-header {
+                page-break-after: avoid;
+                break-after: avoid;
+                font-size: 11pt !important;
+                margin-top: 1.5rem !important;
+            }
+
+            details.file-card {
+                display: block !important;
+                background: #ffffff !important;
+                border: 1px solid #cccccc !important;
+                box-shadow: none !important;
+                margin-bottom: 1rem !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            details.file-card summary, .file-summary {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 1px solid #cccccc !important;
+                cursor: default !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                list-style: none !important;
+            }
+
+            .file-title, .file-name, .badges-group, .badge {
+                white-space: nowrap !important;
+            }
+
+            .badges-group {
+                flex-shrink: 0 !important;
+            }
+            details.file-card .chevron, .chevron {
+                display: none !important;
+            }
+
+            details.file-card .file-content {
+                display: block !important;
+                background: #ffffff !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .file-content, .highlight, .highlight pre, .markdown-body, .markdown-body .highlight, code, pre {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+            }
+
+            .highlight {
+                padding: 0.5rem 0 !important;
+            }
+
+            .highlight pre {
+                white-space: pre-wrap !important;
+                word-break: break-all !important;
+                font-size: 8pt !important;
+                line-height: 1.4 !important;
+            }
+
+            .linenos {
+                color: #888888 !important;
+                opacity: 1 !important;
+            }
+
+            .markdown-body {
+                padding: 0.75rem 1rem !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-size: 8.5pt !important;
+            }
+
+            .markdown-body table th {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+
+            .markdown-body tr:nth-child(even) {
+                background: #ffffff !important;
+            }
+
+            .markdown-body blockquote {
+                background: #ffffff !important;
+                border-left-color: #666666 !important;
+                color: #333333 !important;
+            }
+            .markdown-body :not(pre) > code {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+
+            .markdown-body pre code,
+            .highlight pre code,
+            pre code {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+
+            .markdown-body .highlight {
+                border: 1px solid #cccccc !important;
+                border-radius: 4px !important;
+                margin: 0.75rem 0 !important;
+                background: #ffffff !important;
+            }
+            .artifact-card {
+                display: block !important;
+                background: #ffffff !important;
+                border: 1px solid #cccccc !important;
+                box-shadow: none !important;
+                margin-bottom: 1.5rem !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .artifact-header {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 1px solid #cccccc !important;
+            }
+
+            .svg-container {
+                padding: 1rem !important;
+                background: #ffffff !important;
+            }
+
+            .svg-container svg {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-info">
+                <h1>Submission: hw01</h1>
+                <div class="author-meta">
+                    <span class="author-tag">Zidane Karim</span>
+                    <span class="email-tag">&lt;zkarim7676@gmail.com&gt;</span>
+                </div>
+                <div class="meta">
+                    <span class="meta-tag">11 Source Files</span>
+                    <span class="meta-tag">2 Plots</span>
+                    <span class="meta-tag">597 Lines</span>
+                    <span>Generated: 2026-09-09 17:01:34</span>
+                </div>
+            </div>
+            <div class="toolbar no-print">
+                <button type="button" class="btn" onclick="toggleAllCards(true)" title="Expand all file cards">
+                    Expand All
+                </button>
+                <button type="button" class="btn" onclick="toggleAllCards(false)" title="Collapse all file cards">
+                    Collapse All
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()" title="Print to PDF or paper">
+                    Print / Save PDF
+                </button>
+            </div>
+        </header>
+
+        <nav class="toc-panel no-print">
+            <h2>Source &amp; Configuration Index</h2>
+            <div class="toc-grid">
+                <a href="#file-pyproject_toml" class="toc-link">
+                    <code>pyproject.toml</code>
+                    <span class="toc-badge">31 lines</span>
+                </a>
+                <a href="#file-README_md" class="toc-link">
+                    <code>README.md</code>
+                    <span class="toc-badge">Markdown</span>
+                </a>
+                <a href="#file-src_hw01_config_toml" class="toc-link">
+                    <code>src/hw01/config.toml</code>
+                    <span class="toc-badge">20 lines</span>
+                </a>
+                <a href="#file-src_hw01___init___py" class="toc-link">
+                    <code>src/hw01/__init__.py</code>
+                    <span class="toc-badge">64 lines</span>
+                </a>
+                <a href="#file-src_hw01_config_py" class="toc-link">
+                    <code>src/hw01/config.py</code>
+                    <span class="toc-badge">99 lines</span>
+                </a>
+                <a href="#file-src_hw01_data_py" class="toc-link">
+                    <code>src/hw01/data.py</code>
+                    <span class="toc-badge">41 lines</span>
+                </a>
+                <a href="#file-src_hw01_model_py" class="toc-link">
+                    <code>src/hw01/model.py</code>
+                    <span class="toc-badge">95 lines</span>
+                </a>
+                <a href="#file-src_hw01_training_py" class="toc-link">
+                    <code>src/hw01/training.py</code>
+                    <span class="toc-badge">50 lines</span>
+                </a>
+                <a href="#file-src_hw01_evaluate_py" class="toc-link">
+                    <code>src/hw01/evaluate.py</code>
+                    <span class="toc-badge">14 lines</span>
+                </a>
+                <a href="#file-src_hw01_plotting_py" class="toc-link">
+                    <code>src/hw01/plotting.py</code>
+                    <span class="toc-badge">116 lines</span>
+                </a>
+                <a href="#file-src_hw01_logging_py" class="toc-link">
+                    <code>src/hw01/logging.py</code>
+                    <span class="toc-badge">63 lines</span>
+                </a>
+            </div>
+            <h2 style="margin-top: 1rem;">Artifacts &amp; Plots</h2>
+            <div class="toc-grid">
+                <a href="#art-artifacts_bases_svg" class="toc-link">
+                    <code>artifacts/bases.svg</code>
+                    <span class="toc-badge">SVG Plot</span>
+                </a>
+                <a href="#art-artifacts_fit_svg" class="toc-link">
+                    <code>artifacts/fit.svg</code>
+                    <span class="toc-badge">SVG Plot</span>
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <h2 class="section-header">Source Code &amp; Configuration</h2>
+            <details class="file-card" id="file-pyproject_toml" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">pyproject.toml</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">31 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># pyproject.toml.jinja</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">[project]</span>
+<span class="linenos"> 4</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw01"</span>
+<span class="linenos"> 5</span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<span class="linenos"> 6</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Linear Regression of Noisy Sin Wave"</span>
+<span class="linenos"> 7</span><span class="n">readme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"README.md"</span>
+<span class="linenos"> 8</span><span class="n">authors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"Zidane Karim"</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"zidane.karim@cooper.edu"</span><span class="w"> </span><span class="p">}</span>
+<span class="linenos">10</span><span class="p">]</span>
+<span class="linenos">11</span><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.13"</span>
+<span class="linenos">12</span><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="linenos">13</span><span class="w">    </span><span class="s2">"structlog"</span><span class="p">,</span>
+<span class="linenos">14</span><span class="w">    </span><span class="s2">"rich"</span><span class="p">,</span>
+<span class="linenos">15</span><span class="w">    </span><span class="s2">"numpy"</span><span class="p">,</span>
+<span class="linenos">16</span><span class="w">    </span><span class="s2">"pydantic"</span><span class="p">,</span>
+<span class="linenos">17</span><span class="w">    </span><span class="s2">"pydantic-settings&gt;=2.10.1"</span><span class="p">,</span>
+<span class="linenos">18</span><span class="w">    </span><span class="s2">"matplotlib&gt;=3.10.5"</span><span class="p">,</span>
+<span class="linenos">19</span><span class="w">    </span><span class="s2">"tqdm&gt;=4.67.1"</span><span class="p">,</span>
+<span class="linenos">20</span><span class="w">    </span><span class="s2">"jax[cpu,cuda12]&gt;=0.7.1"</span><span class="p">,</span>
+<span class="linenos">21</span><span class="w">    </span><span class="s2">"flax&gt;=0.11.2"</span><span class="p">,</span>
+<span class="linenos">22</span><span class="w">    </span><span class="s2">"optax&gt;=0.2.4"</span><span class="p">,</span>
+<span class="linenos">23</span><span class="w">    </span><span class="s2">"scikit-learn"</span><span class="p">,</span>
+<span class="linenos">24</span><span class="p">]</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="k">[project.scripts]</span>
+<span class="linenos">27</span><span class="n">hw01</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw01:main"</span>
+<span class="linenos">28</span><span class="n">hw01-evaluate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw01.evaluate:main"</span>
+<span class="linenos">29</span><span class="k">[build-system]</span>
+<span class="linenos">30</span><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"uv_build&gt;=0.8.3,&lt;0.9.0"</span><span class="p">]</span>
+<span class="linenos">31</span><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"uv_build"</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-README_md" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">README.md</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge badge-md">Markdown</span>
+                        <span class="badge">4 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content markdown-body">
+                    <h1>hw01</h1>
+<h2>Linear Regression of Noisy Sin Wave</h2>
+<h3>Minimizes loss using Gaussian basis functions</h3>
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_config_toml" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/config.toml</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">20 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="linenos"> 2</span><span class="n">random_seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xc61dd8fc</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="k">[data]</span>
+<span class="linenos"> 5</span><span class="n">num_features</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="linenos"> 6</span><span class="n">num_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span>
+<span class="linenos"> 7</span><span class="n">sigma_noise</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="c1"># changed from 0.5</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="k">[training]</span>
+<span class="linenos">10</span><span class="n">batch_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span>
+<span class="linenos">11</span><span class="n">num_iters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span>
+<span class="linenos">12</span><span class="n">learning_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="linenos">13</span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="k">[plotting]</span>
+<span class="linenos">18</span><span class="n">output_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"artifacts"</span>
+<span class="linenos">19</span><span class="n">figsize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+<span class="linenos">20</span><span class="n">dpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01___init___py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/__init__.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">64 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">optax</span>
+<span class="linenos"> 4</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_settings</span>
+<span class="linenos"> 8</span><span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logging</span>
+<span class="linenos">10</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearModel</span><span class="p">,</span> <span class="n">NNXLinearModel</span><span class="p">,</span> <span class="n">NNXRegressionModel</span>
+<span class="linenos">11</span><span class="kn">from</span><span class="w"> </span><span class="nn">.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_linear_models</span><span class="p">,</span> <span class="n">plot_fit</span><span class="p">,</span> <span class="n">plot_basis_functions</span>
+<span class="linenos">12</span><span class="kn">from</span><span class="w"> </span><span class="nn">.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">train</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">16</span><span class="w">    </span><span class="sd">"""CLI entry point."""</span>
+<span class="linenos">17</span>    <span class="n">settings</span> <span class="o">=</span> <span class="n">load_settings</span><span class="p">()</span>
+<span class="linenos">18</span>    <span class="n">configure_logging</span><span class="p">()</span>
+<span class="linenos">19</span>    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">20</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Settings loaded"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="c1"># JAX PRNG</span>
+<span class="linenos">23</span>    <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">random_seed</span><span class="p">)</span>
+<span class="linenos">24</span>    <span class="n">data_key</span><span class="p">,</span> <span class="n">model_key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="linenos">25</span>    <span class="n">np_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key_data</span><span class="p">(</span><span class="n">data_key</span><span class="p">)))</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="n">data_generating_model</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span>
+<span class="linenos">28</span>        <span class="n">weights</span><span class="o">=</span><span class="n">np_rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">num_features</span><span class="p">)),</span>
+<span class="linenos">29</span>        <span class="n">bias</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="linenos">30</span>    <span class="p">)</span>
+<span class="linenos">31</span>    <span class="c1"># I couldn't figure out how to adjust these weights and biases--inside the data.py, these are not really used since the clean_y is generated by np.sin</span>
+<span class="linenos">32</span>    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Data generating model"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">data_generating_model</span><span class="p">)</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span>
+<span class="linenos">35</span>        <span class="n">model</span><span class="o">=</span><span class="n">data_generating_model</span><span class="p">,</span>
+<span class="linenos">36</span>        <span class="n">rng</span><span class="o">=</span><span class="n">np_rng</span><span class="p">,</span>
+<span class="linenos">37</span>        <span class="n">num_features</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span>
+<span class="linenos">38</span>        <span class="n">num_samples</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
+<span class="linenos">39</span>        <span class="n">sigma</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sigma_noise</span><span class="p">,</span>
+<span class="linenos">40</span>    <span class="p">)</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">NNXRegressionModel</span><span class="p">(</span>
+<span class="linenos">43</span>        <span class="n">rngs</span><span class="o">=</span><span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">model_key</span><span class="p">),</span>
+<span class="linenos">44</span>        <span class="n">num_features</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span>
+<span class="linenos">45</span>        <span class="n">M</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+<span class="linenos">46</span>    <span class="p">)</span>
+<span class="linenos">47</span>    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Initial model"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">(</span>
+<span class="linenos">50</span>        <span class="n">model</span><span class="p">,</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">),</span> <span class="n">wrt</span><span class="o">=</span><span class="n">nnx</span><span class="o">.</span><span class="n">Param</span>
+<span class="linenos">51</span>    <span class="p">)</span>
+<span class="linenos">52</span>
+<span class="linenos">53</span>    <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="p">,</span> <span class="n">np_rng</span><span class="p">)</span>
+<span class="linenos">54</span>
+<span class="linenos">55</span>    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Trained model"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">56</span>
+<span class="linenos">57</span>    <span class="c1"># compare_linear_models(data.model, model.model)</span>
+<span class="linenos">58</span>    <span class="c1"># I commented out this line since it wasn't properly reflecting my synthetic data, and it wasn't in the assignment description</span>
+<span class="linenos">59</span>
+<span class="linenos">60</span>    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">num_features</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">61</span>        <span class="n">plot_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">plotting</span><span class="p">)</span>
+<span class="linenos">62</span>        <span class="n">plot_basis_functions</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">basis</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">plotting</span><span class="p">)</span>
+<span class="linenos">63</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">64</span>        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Skipping plotting for multi-feature models."</span><span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_config_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/config.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">99 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">files</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="linenos"> 6</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic_settings</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="linenos"> 7</span>    <span class="n">BaseSettings</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="n">SettingsConfigDict</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="n">TomlConfigSettingsSource</span><span class="p">,</span>
+<span class="linenos">11</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">def</span><span class="w"> </span><span class="nf">_find_config_toml</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="linenos">15</span><span class="w">    </span><span class="sd">"""Resolve config.toml location via importlib.resources or relative path fallback."""</span>
+<span class="linenos">16</span>    <span class="k">if</span> <span class="n">__package__</span><span class="p">:</span>
+<span class="linenos">17</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">18</span>            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">files</span><span class="p">(</span><span class="n">__package__</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"config.toml"</span><span class="p">)))</span>
+<span class="linenos">19</span>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<span class="linenos">20</span>            <span class="k">pass</span>
+<span class="linenos">21</span>    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"config.toml"</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="k">class</span><span class="w"> </span><span class="nc">DataSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">25</span><span class="w">    </span><span class="sd">"""Settings for data generation."""</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">28</span>        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of feature dimensions"</span>
+<span class="linenos">29</span>    <span class="p">)</span>
+<span class="linenos">30</span>    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">31</span>        <span class="n">default</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of synthetic data points"</span>
+<span class="linenos">32</span>    <span class="p">)</span>
+<span class="linenos">33</span>    <span class="n">sigma_noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">34</span>        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Standard deviation of Gaussian noise"</span>
+<span class="linenos">35</span>    <span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span><span class="k">class</span><span class="w"> </span><span class="nc">TrainingSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">39</span><span class="w">    </span><span class="sd">"""Settings for model training."""</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Mini-batch size for SGD"</span><span class="p">)</span>
+<span class="linenos">42</span>    <span class="n">num_iters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">43</span>        <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of optimization iterations"</span>
+<span class="linenos">44</span>    <span class="p">)</span>
+<span class="linenos">45</span>    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">46</span>        <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Learning rate for Adam optimizer"</span>
+<span class="linenos">47</span>    <span class="p">)</span>
+<span class="linenos">48</span>    <span class="n">M</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"number of gaussian curves"</span><span class="p">)</span>
+<span class="linenos">49</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span><span class="k">class</span><span class="w"> </span><span class="nc">PlottingSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">52</span><span class="w">    </span><span class="sd">"""Settings for plotting."""</span>
+<span class="linenos">53</span>
+<span class="linenos">54</span>    <span class="n">figsize</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="linenos">55</span>    <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Dots per inch for saved figures"</span><span class="p">)</span>
+<span class="linenos">56</span>    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"artifacts"</span><span class="p">)</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span>
+<span class="linenos">59</span><span class="k">class</span><span class="w"> </span><span class="nc">AppSettings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+<span class="linenos">60</span><span class="w">    </span><span class="sd">"""Main application settings."""</span>
+<span class="linenos">61</span>
+<span class="linenos">62</span>    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">63</span>    <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">31415</span>
+<span class="linenos">64</span>    <span class="n">data</span><span class="p">:</span> <span class="n">DataSettings</span> <span class="o">=</span> <span class="n">DataSettings</span><span class="p">()</span>
+<span class="linenos">65</span>    <span class="n">training</span><span class="p">:</span> <span class="n">TrainingSettings</span> <span class="o">=</span> <span class="n">TrainingSettings</span><span class="p">()</span>
+<span class="linenos">66</span>    <span class="n">plotting</span><span class="p">:</span> <span class="n">PlottingSettings</span> <span class="o">=</span> <span class="n">PlottingSettings</span><span class="p">()</span>
+<span class="linenos">67</span>
+<span class="linenos">68</span>    <span class="n">model_config</span> <span class="o">=</span> <span class="n">SettingsConfigDict</span><span class="p">(</span>
+<span class="linenos">69</span>        <span class="n">toml_file</span><span class="o">=</span><span class="n">_find_config_toml</span><span class="p">(),</span>
+<span class="linenos">70</span>        <span class="n">env_nested_delimiter</span><span class="o">=</span><span class="s2">"__"</span><span class="p">,</span>
+<span class="linenos">71</span>        <span class="n">extra</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span>
+<span class="linenos">72</span>    <span class="p">)</span>
+<span class="linenos">73</span>
+<span class="linenos">74</span>    <span class="nd">@classmethod</span>
+<span class="linenos">75</span>    <span class="k">def</span><span class="w"> </span><span class="nf">settings_customise_sources</span><span class="p">(</span>
+<span class="linenos">76</span>        <span class="bp">cls</span><span class="p">,</span>
+<span class="linenos">77</span>        <span class="n">settings_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseSettings</span><span class="p">],</span>
+<span class="linenos">78</span>        <span class="n">init_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">79</span>        <span class="n">env_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">80</span>        <span class="n">dotenv_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">81</span>        <span class="n">file_secret_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">82</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PydanticBaseSettingsSource</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="linenos">83</span><span class="w">        </span><span class="sd">"""</span>
+<span class="linenos">84</span><span class="sd">        Set the priority of settings sources.</span>
+<span class="linenos">85</span>
+<span class="linenos">86</span><span class="sd">        We use a TOML file for configuration.</span>
+<span class="linenos">87</span><span class="sd">        """</span>
+<span class="linenos">88</span>        <span class="k">return</span> <span class="p">(</span>
+<span class="linenos">89</span>            <span class="n">init_settings</span><span class="p">,</span>
+<span class="linenos">90</span>            <span class="n">TomlConfigSettingsSource</span><span class="p">(</span><span class="n">settings_cls</span><span class="p">),</span>
+<span class="linenos">91</span>            <span class="n">env_settings</span><span class="p">,</span>
+<span class="linenos">92</span>            <span class="n">dotenv_settings</span><span class="p">,</span>
+<span class="linenos">93</span>            <span class="n">file_secret_settings</span><span class="p">,</span>
+<span class="linenos">94</span>        <span class="p">)</span>
+<span class="linenos">95</span>
+<span class="linenos">96</span>
+<span class="linenos">97</span><span class="k">def</span><span class="w"> </span><span class="nf">load_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AppSettings</span><span class="p">:</span>
+<span class="linenos">98</span><span class="w">    </span><span class="sd">"""Load application settings."""</span>
+<span class="linenos">99</span>    <span class="k">return</span> <span class="n">AppSettings</span><span class="p">()</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_data_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/data.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">41 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitVar</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearModel</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="nd">@dataclass</span>
+<span class="linenos"> 9</span><span class="k">class</span><span class="w"> </span><span class="nc">Data</span><span class="p">:</span>
+<span class="linenos">10</span><span class="w">    </span><span class="sd">"""Handles generation of synthetic data for linear regression."""</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="n">model</span><span class="p">:</span> <span class="n">LinearModel</span>
+<span class="linenos">13</span>    <span class="n">rng</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">]</span>
+<span class="linenos">14</span>    <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span>
+<span class="linenos">15</span>    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span>
+<span class="linenos">16</span>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span>
+<span class="linenos">17</span>    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">18</span>    <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="n">index</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span>    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">):</span>
+<span class="linenos">22</span><span class="w">        </span><span class="sd">"""Generate synthetic data based on the model."""</span>
+<span class="linenos">23</span>        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">)</span>
+<span class="linenos">24</span>        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+<span class="linenos">25</span>            <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span><span class="p">)</span>
+<span class="linenos">26</span>        <span class="p">)</span>  <span class="c1"># manually changed from (0.1, 0.9) to (0, 1), to reflect assignment specs</span>
+<span class="linenos">27</span>        <span class="c1"># clean_y = self.x @ self.model.weights[:, np.newaxis] + self.model.bias</span>
+<span class="linenos">28</span>        <span class="c1"># I changed clean_y from the weights + bias here, to the sin wave output.</span>
+<span class="linenos">29</span>        <span class="c1"># This is because in training:loss_fn, the y^ is already taken from the model, so I didn't really understand why I should basically replicate that in this step. emailed Prof Curro about this</span>
+<span class="linenos">30</span>        <span class="n">clean_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos">31</span>        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
+<span class="linenos">32</span>            <span class="n">loc</span><span class="o">=</span><span class="n">clean_y</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+<span class="linenos">33</span>        <span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># this produces the + epsilon_i from my understanding</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_batch</span><span class="p">(</span>
+<span class="linenos">36</span>        <span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="linenos">37</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="linenos">38</span><span class="w">        </span><span class="sd">"""Select random subset of examples for training batch."""</span>
+<span class="linenos">39</span>        <span class="n">choices</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">choices</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">choices</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_model_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/model.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">95 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos"> 4</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="linenos"> 5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 6</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos"> 7</span><span class="c1"># Credit to Josh Miao, EE '27 for helping me understand the problem, and Ahikara Sandrasagra EE '28, for providing me with the material to understand</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="nd">@dataclass</span>
+<span class="linenos">11</span><span class="k">class</span><span class="w"> </span><span class="nc">LinearModel</span><span class="p">:</span>
+<span class="linenos">12</span><span class="w">    </span><span class="sd">"""Represents a simple linear model."""</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="linenos">15</span>    <span class="n">bias</span><span class="p">:</span> <span class="nb">float</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="nd">@dataclass</span>
+<span class="linenos">19</span><span class="k">class</span><span class="w"> </span><span class="nc">Parameters</span><span class="p">:</span>  <span class="c1"># avoided calling this simple BasisExpansion since it's not really the same</span>
+<span class="linenos">20</span>    <span class="n">mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># n-dimensional array</span>
+<span class="linenos">21</span>    <span class="n">sigma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="linenos">22</span>    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="linenos">23</span>    <span class="n">bias</span><span class="p">:</span> <span class="nb">float</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="k">class</span><span class="w"> </span><span class="nc">NNXLinearModel</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos">27</span><span class="w">    </span><span class="sd">"""A Flax NNX module for a linear regression model."""</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rngs</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">,</span> <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="linenos">30</span>        <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span> <span class="o">=</span> <span class="n">num_features</span>
+<span class="linenos">31</span>        <span class="n">key</span> <span class="o">=</span> <span class="n">rngs</span><span class="o">.</span><span class="n">params</span><span class="p">()</span>
+<span class="linenos">32</span>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="linenos">33</span>        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="linenos">36</span><span class="w">        </span><span class="sd">"""Predicts the output for a given input."""</span>
+<span class="linenos">37</span>        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span>    <span class="nd">@property</span>
+<span class="linenos">40</span>    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearModel</span><span class="p">:</span>
+<span class="linenos">41</span><span class="w">        </span><span class="sd">"""Returns the underlying simple linear model."""</span>
+<span class="linenos">42</span>        <span class="k">return</span> <span class="n">LinearModel</span><span class="p">(</span>
+<span class="linenos">43</span>            <span class="n">weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">num_features</span><span class="p">]),</span>
+<span class="linenos">44</span>            <span class="n">bias</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()),</span>
+<span class="linenos">45</span>        <span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span><span class="k">class</span><span class="w"> </span><span class="nc">NNXBasisExpansion</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos">49</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rngs</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">,</span> <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="linenos">50</span>        <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span> <span class="o">=</span> <span class="n">num_features</span>
+<span class="linenos">51</span>        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span>
+<span class="linenos">52</span>        <span class="n">key</span> <span class="o">=</span> <span class="n">rngs</span><span class="o">.</span><span class="n">params</span><span class="p">()</span>
+<span class="linenos">53</span>        <span class="c1"># src: https://flax.readthedocs.io/en/stable/api_reference/flax.nnx/variables.html</span>
+<span class="linenos">54</span>        <span class="c1"># param required for learnable &amp; automatic diff</span>
+<span class="linenos">55</span>        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span>
+<span class="linenos">56</span>            <span class="n">jnp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+<span class="linenos">57</span>        <span class="p">)</span>  <span class="c1"># had to ask about min/max, but makes sense since we are sampling x from (0,1)</span>
+<span class="linenos">58</span>        <span class="c1"># log sig here cuz theyll die out otherwise, thanks Josh Miao</span>
+<span class="linenos">59</span>        <span class="bp">self</span><span class="o">.</span><span class="n">sig</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span>
+<span class="linenos">60</span>            <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">,))</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+<span class="linenos">61</span>        <span class="p">)</span>  <span class="c1"># 0.16? let M=6, 1/M</span>
+<span class="linenos">62</span>        <span class="c1"># sig uses ones so no key needed</span>
+<span class="linenos">63</span>
+<span class="linenos">64</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+<span class="linenos">65</span><span class="w">        </span><span class="sd">"""Predicts the output for a given input."""</span>  <span class="c1"># copied from NNXLinearModel</span>
+<span class="linenos">66</span>        <span class="c1">#  to ensure broadcasting we need to reshape x here</span>
+<span class="linenos">67</span>        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">68</span>            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span>
+<span class="linenos">69</span>                <span class="p">:,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">newaxis</span>
+<span class="linenos">70</span>            <span class="p">]</span>  <span class="c1"># adds singleton axis (equivalent to None, but dummy axis essentially)</span>
+<span class="linenos">71</span>        <span class="c1"># restore sig when we are computing phi</span>
+<span class="linenos">72</span>        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sig</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">73</span>
+<span class="linenos">74</span>
+<span class="linenos">75</span><span class="k">class</span><span class="w"> </span><span class="nc">NNXRegressionModel</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos">76</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rngs</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">,</span> <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="linenos">77</span>        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span>
+<span class="linenos">78</span>        <span class="bp">self</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">NNXBasisExpansion</span><span class="p">(</span><span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">num_features</span><span class="o">=</span><span class="n">num_features</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+<span class="linenos">79</span>        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">NNXLinearModel</span><span class="p">(</span><span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">num_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+<span class="linenos">80</span>
+<span class="linenos">81</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="linenos">82</span>        <span class="n">phi_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos">83</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+<span class="linenos">84</span>            <span class="n">phi_x</span>
+<span class="linenos">85</span>        <span class="p">)</span>  <span class="c1"># we can pass phi_x in place of x as according to given functional form</span>
+<span class="linenos">86</span>        <span class="c1"># and we need to read from this regression rather than the straight linear</span>
+<span class="linenos">87</span>
+<span class="linenos">88</span>    <span class="nd">@property</span>
+<span class="linenos">89</span>    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameters</span><span class="p">:</span>
+<span class="linenos">90</span>        <span class="k">return</span> <span class="n">Parameters</span><span class="p">(</span>
+<span class="linenos">91</span>            <span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
+<span class="linenos">92</span>            <span class="n">sigma</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">sig</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
+<span class="linenos">93</span>            <span class="n">weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">num_features</span><span class="p">]),</span>
+<span class="linenos">94</span>            <span class="n">bias</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()),</span>
+<span class="linenos">95</span>        <span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_training_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/training.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">50 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">trange</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainingSettings</span>
+<span class="linenos"> 8</span><span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">NNXLinearModel</span><span class="p">,</span> <span class="n">NNXRegressionModel</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="nd">@nnx</span><span class="o">.</span><span class="n">jit</span>
+<span class="linenos">15</span><span class="k">def</span><span class="w"> </span><span class="nf">train_step</span><span class="p">(</span>
+<span class="linenos">16</span>    <span class="n">model</span><span class="p">:</span> <span class="n">NNXRegressionModel</span><span class="p">,</span>
+<span class="linenos">17</span>    <span class="n">optimizer</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">,</span>
+<span class="linenos">18</span>    <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="linenos">19</span>    <span class="n">y</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># changed here to NNXRegressionModel</span>
+<span class="linenos">20</span><span class="p">):</span>
+<span class="linenos">21</span><span class="w">    </span><span class="sd">"""Performs a single training step."""</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">NNXRegressionModel</span><span class="p">):</span>
+<span class="linenos">24</span>        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos">25</span>        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">y_hat</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">)(</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">28</span>    <span class="n">optimizer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>  <span class="c1"># In-place update of model parameters</span>
+<span class="linenos">29</span>    <span class="k">return</span> <span class="n">loss</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span>
+<span class="linenos">33</span>    <span class="n">model</span><span class="p">:</span> <span class="n">NNXRegressionModel</span><span class="p">,</span>
+<span class="linenos">34</span>    <span class="n">optimizer</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">,</span>
+<span class="linenos">35</span>    <span class="n">data</span><span class="p">:</span> <span class="n">Data</span><span class="p">,</span>
+<span class="linenos">36</span>    <span class="n">settings</span><span class="p">:</span> <span class="n">TrainingSettings</span><span class="p">,</span>
+<span class="linenos">37</span>    <span class="n">np_rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+<span class="linenos">38</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">39</span><span class="w">    </span><span class="sd">"""Train the model using SGD."""</span>
+<span class="linenos">40</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting training"</span><span class="p">,</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<span class="linenos">41</span>    <span class="n">bar</span> <span class="o">=</span> <span class="n">trange</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">num_iters</span><span class="p">)</span>
+<span class="linenos">42</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">:</span>
+<span class="linenos">43</span>        <span class="n">x_np</span><span class="p">,</span> <span class="n">y_np</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">np_rng</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="linenos">44</span>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x_np</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">)</span>
+<span class="linenos">45</span>
+<span class="linenos">46</span>        <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>        <span class="n">bar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loss @ </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> =&gt; </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="linenos">49</span>        <span class="n">bar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="linenos">50</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Training finished"</span><span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_evaluate_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/evaluate.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">14 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">"""Evaluation entry point for hw01."""</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logging</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="sd">"""CLI entry point for homework evaluation."""</span>
+<span class="linenos">10</span>    <span class="n">configure_logging</span><span class="p">()</span>
+<span class="linenos">11</span>    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">12</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<span class="linenos">13</span>        <span class="s2">"Evaluation not yet implemented for hw01. Implement evaluation logic in src/hw01/evaluate.py"</span>
+<span class="linenos">14</span>    <span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_plotting_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/plotting.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">116 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="linenos">  3</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.style</span>
+<span class="linenos">  4</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  6</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos">  7</span>
+<span class="linenos">  8</span><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlottingSettings</span>
+<span class="linenos">  9</span><span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="linenos"> 10</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearModel</span><span class="p">,</span> <span class="n">NNXLinearModel</span><span class="p">,</span> <span class="n">NNXRegressionModel</span><span class="p">,</span> <span class="n">NNXBasisExpansion</span>
+<span class="linenos"> 11</span>
+<span class="linenos"> 12</span><span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos"> 13</span>
+<span class="linenos"> 14</span><span class="n">font</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 15</span>    <span class="c1"># "family": "Adobe Caslon Pro",</span>
+<span class="linenos"> 16</span>    <span class="s2">"size"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="linenos"> 17</span><span class="p">}</span>
+<span class="linenos"> 18</span>
+<span class="linenos"> 19</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"classic"</span><span class="p">)</span>
+<span class="linenos"> 20</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">"font"</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
+<span class="linenos"> 21</span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">"svg.fonttype"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"none"</span>
+<span class="linenos"> 22</span>
+<span class="linenos"> 23</span>
+<span class="linenos"> 24</span><span class="k">def</span><span class="w"> </span><span class="nf">compare_linear_models</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">LinearModel</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">LinearModel</span><span class="p">):</span>
+<span class="linenos"> 25</span><span class="w">    </span><span class="sd">"""Prints a comparison of two linear models."""</span>
+<span class="linenos"> 26</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Comparing models"</span><span class="p">,</span> <span class="n">true</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">estimated</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="linenos"> 27</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"w,    w_hat"</span><span class="p">)</span>
+<span class="linenos"> 28</span>    <span class="k">for</span> <span class="n">w_a</span><span class="p">,</span> <span class="n">w_b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">weights</span><span class="p">):</span>
+<span class="linenos"> 29</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">w_a</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">w_b</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="linenos"> 30</span>
+<span class="linenos"> 31</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">bias</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">bias</span><span class="si">:</span><span class="s2">0.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="linenos"> 32</span>
+<span class="linenos"> 33</span>
+<span class="linenos"> 34</span><span class="k">def</span><span class="w"> </span><span class="nf">plot_fit</span><span class="p">(</span>
+<span class="linenos"> 35</span>    <span class="n">model</span><span class="p">:</span> <span class="n">NNXRegressionModel</span><span class="p">,</span>  <span class="c1"># changed to Regression model here</span>
+<span class="linenos"> 36</span>    <span class="n">data</span><span class="p">:</span> <span class="n">Data</span><span class="p">,</span>
+<span class="linenos"> 37</span>    <span class="n">settings</span><span class="p">:</span> <span class="n">PlottingSettings</span><span class="p">,</span>
+<span class="linenos"> 38</span><span class="p">):</span>
+<span class="linenos"> 39</span><span class="w">    </span><span class="sd">"""Plots the linear fit and saves it to a file."""</span>
+<span class="linenos"> 40</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Plotting fit"</span><span class="p">)</span>
+<span class="linenos"> 41</span>    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+<span class="linenos"> 42</span>
+<span class="linenos"> 43</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Regression Fit"</span><span class="p">)</span>
+<span class="linenos"> 44</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="linenos"> 45</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span>  <span class="c1"># added negative y-lim</span>
+<span class="linenos"> 46</span>    <span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="linenos"> 47</span>    <span class="n">h</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos"> 48</span>
+<span class="linenos"> 49</span>    <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="linenos"> 50</span>    <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="linenos"> 51</span>
+<span class="linenos"> 52</span>    <span class="n">true_sin_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">xs</span><span class="p">)</span>
+<span class="linenos"> 53</span>    <span class="c1"># true sin plot</span>
+<span class="linenos"> 54</span>    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span class="linenos"> 55</span>        <span class="n">xs</span><span class="p">,</span> <span class="n">true_sin_y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"True Sin"</span>
+<span class="linenos"> 56</span>    <span class="p">)</span>
+<span class="linenos"> 57</span>
+<span class="linenos"> 58</span>    <span class="c1"># noisy sin plot (same as true, but with sigma noise added)</span>
+<span class="linenos"> 59</span>    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span class="linenos"> 60</span>        <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+<span class="linenos"> 61</span>        <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+<span class="linenos"> 62</span>        <span class="s2">"o"</span><span class="p">,</span>
+<span class="linenos"> 63</span>        <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span>
+<span class="linenos"> 64</span>        <span class="n">markeredgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span>
+<span class="linenos"> 65</span>        <span class="n">label</span><span class="o">=</span><span class="s2">"Noisy Sin"</span><span class="p">,</span>
+<span class="linenos"> 66</span>    <span class="p">)</span>
+<span class="linenos"> 67</span>
+<span class="linenos"> 68</span>    <span class="c1"># regression plot</span>
+<span class="linenos"> 69</span>    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span class="linenos"> 70</span>        <span class="n">xs</span><span class="p">,</span>
+<span class="linenos"> 71</span>        <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]))),</span>
+<span class="linenos"> 72</span>        <span class="s2">"-"</span><span class="p">,</span>
+<span class="linenos"> 73</span>        <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
+<span class="linenos"> 74</span>        <span class="n">label</span><span class="o">=</span><span class="s2">"Regression"</span><span class="p">,</span>
+<span class="linenos"> 75</span>    <span class="p">)</span>
+<span class="linenos"> 76</span>
+<span class="linenos"> 77</span>    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos"> 78</span>    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="linenos"> 79</span>    <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 80</span>    <span class="n">svg_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"fit.svg"</span>
+<span class="linenos"> 81</span>    <span class="n">pdf_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"fit.pdf"</span>
+<span class="linenos"> 82</span>    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">svg_path</span><span class="p">)</span>
+<span class="linenos"> 83</span>    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pdf_path</span><span class="p">)</span>
+<span class="linenos"> 84</span>    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+<span class="linenos"> 85</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Saved plot"</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">svg_path</span><span class="p">))</span>
+<span class="linenos"> 86</span>
+<span class="linenos"> 87</span>
+<span class="linenos"> 88</span><span class="k">def</span><span class="w"> </span><span class="nf">plot_basis_functions</span><span class="p">(</span>
+<span class="linenos"> 89</span>    <span class="n">model</span><span class="p">:</span> <span class="n">NNXBasisExpansion</span><span class="p">,</span>  <span class="c1"># probably? also i had to ask someone what plotting a basis expansion meant and I learned it was just phi's</span>
+<span class="linenos"> 90</span>    <span class="n">settings</span><span class="p">:</span> <span class="n">PlottingSettings</span><span class="p">,</span>
+<span class="linenos"> 91</span><span class="p">):</span>
+<span class="linenos"> 92</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Learned mus:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">value</span><span class="p">)))</span>
+<span class="linenos"> 93</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Learned (log) sigmas:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sig</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+<span class="linenos"> 94</span><span class="w">    </span><span class="sd">"""Plots M Gaussian Basis Functions and saves it to a file."""</span>
+<span class="linenos"> 95</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Plotting bases"</span><span class="p">)</span>
+<span class="linenos"> 96</span>    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+<span class="linenos"> 97</span>
+<span class="linenos"> 98</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Bases for fit"</span><span class="p">)</span>
+<span class="linenos"> 99</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="linenos">100</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="linenos">101</span>    <span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="linenos">102</span>    <span class="n">h</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">103</span>
+<span class="linenos">104</span>    <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="linenos">105</span>    <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="linenos">106</span>    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xs</span><span class="p">))),</span> <span class="s2">"-"</span><span class="p">)</span>
+<span class="linenos">107</span>
+<span class="linenos">108</span>    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="linenos">109</span>
+<span class="linenos">110</span>    <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">111</span>    <span class="n">svg_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"bases.svg"</span>
+<span class="linenos">112</span>    <span class="n">pdf_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"fit.pdf"</span>
+<span class="linenos">113</span>    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">svg_path</span><span class="p">)</span>
+<span class="linenos">114</span>    <span class="c1"># plt.savefig(pdf_path)</span>
+<span class="linenos">115</span>    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+<span class="linenos">116</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Saved plot"</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">svg_path</span><span class="p">))</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw01_logging_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw01/logging.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">63 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos"> 7</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 8</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="k">class</span><span class="w"> </span><span class="nc">FormattedFloat</span><span class="p">(</span><span class="nb">float</span><span class="p">):</span>
+<span class="linenos">12</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">13</span>        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">"</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="k">def</span><span class="w"> </span><span class="nf">custom_serializer_processor</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">event_dict</span><span class="p">):</span>
+<span class="linenos">17</span>    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="linenos">18</span>        <span class="c1"># Handle JAX arrays in addition to TF tensors</span>
+<span class="linenos">19</span>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">):</span>  <span class="c1"># Covers TF tensors</span>
+<span class="linenos">20</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="linenos">21</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+<span class="linenos">22</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">23</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+<span class="linenos">24</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="linenos">25</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+<span class="linenos">26</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">FormattedFloat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">27</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+<span class="linenos">28</span>            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">29</span>        <span class="n">event_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="linenos">30</span>    <span class="k">return</span> <span class="n">event_dict</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span><span class="k">def</span><span class="w"> </span><span class="nf">configure_logging</span><span class="p">():</span>
+<span class="linenos">34</span><span class="w">    </span><span class="sd">"""Configure logging for the application."""</span>
+<span class="linenos">35</span>    <span class="n">log_level</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"LOG_LEVEL"</span><span class="p">,</span> <span class="s2">"INFO"</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+<span class="linenos">38</span>        <span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%(message)s</span><span class="s2">"</span><span class="p">,</span>
+<span class="linenos">39</span>        <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+<span class="linenos">40</span>        <span class="n">level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span>
+<span class="linenos">41</span>        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">42</span>    <span class="p">)</span>
+<span class="linenos">43</span>    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+<span class="linenos">44</span>    <span class="n">structlog</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+<span class="linenos">45</span>        <span class="n">processors</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">46</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">filter_by_level</span><span class="p">,</span>
+<span class="linenos">47</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">add_logger_name</span><span class="p">,</span>
+<span class="linenos">48</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">add_log_level</span><span class="p">,</span>
+<span class="linenos">49</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">PositionalArgumentsFormatter</span><span class="p">(),</span>
+<span class="linenos">50</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">TimeStamper</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s2">"iso"</span><span class="p">),</span>
+<span class="linenos">51</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">StackInfoRenderer</span><span class="p">(),</span>
+<span class="linenos">52</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">format_exc_info</span><span class="p">,</span>
+<span class="linenos">53</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">UnicodeDecoder</span><span class="p">(),</span>
+<span class="linenos">54</span>            <span class="n">custom_serializer_processor</span><span class="p">,</span>
+<span class="linenos">55</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">ConsoleRenderer</span><span class="p">(</span>
+<span class="linenos">56</span>                <span class="n">colors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exception_formatter</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">RichTracebackFormatter</span><span class="p">()</span>
+<span class="linenos">57</span>            <span class="p">),</span>
+<span class="linenos">58</span>        <span class="p">],</span>
+<span class="linenos">59</span>        <span class="n">context_class</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+<span class="linenos">60</span>        <span class="n">logger_factory</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">LoggerFactory</span><span class="p">(),</span>
+<span class="linenos">61</span>        <span class="n">wrapper_class</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">BoundLogger</span><span class="p">,</span>
+<span class="linenos">62</span>        <span class="n">cache_logger_on_first_use</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">63</span>    <span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+
+            <h2 class="section-header">Artifacts &amp; Generated Vector Plots</h2>
+            <div class="artifact-card" id="art-artifacts_bases_svg">
+                <div class="artifact-header">
+                    <span class="artifact-title">
+                        <span class="artifact-name">artifacts/bases.svg</span>
+                    </span>
+                    <span class="badge badge-plot">Vector SVG</span>
+                </div>
+                <div class="svg-container">
+                    <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="360pt" height="216pt" viewBox="0 0 360 216" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-09T16:46:23.244812</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 216 
+L 360 216 
+L 360 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 43.88 176.2 
+L 341.1 176.2 
+L 341.1 25.16 
+L 43.88 25.16 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 43.88 176.2 
+L 114.689169 176.096863 
+L 115.879239 175.86553 
+L 116.771792 175.44478 
+L 117.366827 174.941537 
+L 117.961862 174.156511 
+L 118.556897 172.966526 
+L 119.151932 171.21424 
+L 119.746967 168.708675 
+L 120.342002 165.23141 
+L 120.937037 160.550225 
+L 121.532072 154.441427 
+L 122.424625 142.217984 
+L 123.317177 126.128769 
+L 124.507247 99.513657 
+L 126.58987 50.145405 
+L 127.482422 34.643204 
+L 128.077457 28.129563 
+L 128.374975 26.223199 
+L 128.672492 25.271552 
+L 128.97001 25.293015 
+L 129.267528 26.287163 
+L 129.565045 28.234831 
+L 130.16008 34.824311 
+L 130.755115 44.569961 
+L 131.647668 63.542563 
+L 134.622843 132.157233 
+L 135.515395 146.908696 
+L 136.407948 157.820907 
+L 137.300501 165.319983 
+L 137.895536 168.773395 
+L 138.490571 171.260125 
+L 139.085606 172.998107 
+L 139.680641 174.177621 
+L 140.275676 174.955246 
+L 140.870711 175.453432 
+L 141.763263 175.869644 
+L 142.953333 176.098248 
+L 145.035956 176.189898 
+L 156.936657 176.2 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #0000ff; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 43.88 176.2 
+L 155.746587 176.11103 
+L 157.234174 175.861162 
+L 158.126727 175.490691 
+L 158.721762 175.069607 
+L 159.316797 174.436313 
+L 159.911832 173.505908 
+L 160.506867 172.170959 
+L 161.101902 170.30084 
+L 161.696937 167.74377 
+L 162.291972 164.332436 
+L 162.887007 159.894084 
+L 163.77956 150.961264 
+L 164.672112 138.953347 
+L 165.564665 123.79133 
+L 166.754735 99.472236 
+L 169.134875 48.663635 
+L 170.027427 34.805189 
+L 170.622462 28.697992 
+L 170.91998 26.738396 
+L 171.217497 25.552841 
+L 171.515015 25.160036 
+L 171.812533 25.566183 
+L 172.11005 26.764882 
+L 172.705085 31.452193 
+L 173.30012 38.931822 
+L 174.192673 54.370087 
+L 175.68026 86.377199 
+L 177.465365 123.884098 
+L 178.357918 139.029156 
+L 179.25047 151.019313 
+L 180.143023 159.935913 
+L 181.035576 166.18414 
+L 181.630611 169.13966 
+L 182.225646 171.327392 
+L 182.820681 172.907729 
+L 183.415716 174.022146 
+L 184.010751 174.789543 
+L 184.903303 175.493513 
+L 185.795856 175.8626 
+L 186.985926 176.083051 
+L 189.068549 176.185066 
+L 198.291592 176.2 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #008000; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 43.88 176.2 
+L 173.597638 176.090231 
+L 176.87033 175.850589 
+L 178.952953 175.507384 
+L 180.738058 174.994806 
+L 182.225646 174.331231 
+L 183.415716 173.585265 
+L 184.605786 172.590074 
+L 185.795856 171.28224 
+L 186.985926 169.589495 
+L 188.175996 167.431994 
+L 189.366066 164.724675 
+L 190.556136 161.380693 
+L 191.746206 157.316214 
+L 192.936276 152.456281 
+L 194.126346 146.741766 
+L 195.613934 138.345202 
+L 197.101522 128.560178 
+L 198.886627 115.13062 
+L 200.969249 97.648562 
+L 206.027047 54.10394 
+L 207.514635 43.43113 
+L 208.704705 36.342686 
+L 209.597257 32.048351 
+L 210.48981 28.734417 
+L 211.084845 27.106624 
+L 211.67988 25.963427 
+L 212.274915 25.316206 
+L 212.572432 25.180796 
+L 212.86995 25.171415 
+L 213.167467 25.28809 
+L 213.762503 25.898112 
+L 214.357538 27.00474 
+L 214.952573 28.597009 
+L 215.845125 31.86024 
+L 216.737678 36.108004 
+L 217.927748 43.142261 
+L 219.415335 53.762279 
+L 221.20044 68.404769 
+L 227.448308 121.724849 
+L 229.233413 134.306957 
+L 230.721001 143.305486 
+L 232.208589 150.904684 
+L 233.398659 156.004885 
+L 234.588729 160.290693 
+L 235.778799 163.833273 
+L 236.968869 166.71458 
+L 238.158939 169.021118 
+L 239.349009 170.83888 
+L 240.539079 172.249492 
+L 241.729149 173.32758 
+L 242.919219 174.13917 
+L 244.406807 174.864555 
+L 245.894394 175.352489 
+L 247.679499 175.722248 
+L 250.05964 175.987689 
+L 253.62985 176.143099 
+L 261.365305 176.197827 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #ff0000; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 43.88 176.2 
+L 212.572432 176.091253 
+L 215.547608 175.838019 
+L 217.332713 175.493225 
+L 218.8203 175.002152 
+L 220.01037 174.40873 
+L 221.20044 173.567718 
+L 222.390511 172.398848 
+L 223.283063 171.249802 
+L 224.175616 169.81646 
+L 225.068168 168.048605 
+L 225.960721 165.892961 
+L 227.150791 162.320832 
+L 228.340861 157.83441 
+L 229.530931 152.318711 
+L 230.721001 145.684369 
+L 231.911071 137.882378 
+L 233.398659 126.503794 
+L 235.183764 110.709032 
+L 237.563904 87.191123 
+L 240.539079 57.810301 
+L 242.026667 45.140272 
+L 243.216737 36.802003 
+L 244.109289 31.866497 
+L 245.001842 28.217834 
+L 245.596877 26.553643 
+L 246.191912 25.530307 
+L 246.489429 25.263468 
+L 246.786947 25.161188 
+L 247.084464 25.223802 
+L 247.381982 25.451102 
+L 247.977017 26.396285 
+L 248.572052 27.984386 
+L 249.167087 30.194815 
+L 250.05964 34.613198 
+L 250.952192 40.240741 
+L 252.142262 49.351963 
+L 253.62985 62.710318 
+L 256.307508 89.486259 
+L 258.985165 115.553769 
+L 260.77027 130.707584 
+L 262.257858 141.458983 
+L 263.447928 148.74458 
+L 264.637998 154.878107 
+L 265.828068 159.928221 
+L 267.018138 163.997294 
+L 268.208208 167.207325 
+L 269.398278 169.687717 
+L 270.588348 171.565644 
+L 271.778418 172.959163 
+L 272.968488 173.972915 
+L 274.158559 174.69607 
+L 275.646146 175.301704 
+L 277.431251 175.733126 
+L 279.513874 175.992971 
+L 282.786567 176.148227 
+L 290.224505 176.198643 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #00bfbf; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 43.88 176.2 
+L 90.59025 176.10225 
+L 91.78032 175.87487 
+L 92.672873 175.453684 
+L 93.267908 174.944164 
+L 93.862943 174.142733 
+L 94.457978 172.919085 
+L 95.053013 171.106152 
+L 95.648048 168.500831 
+L 96.243083 164.871015 
+L 96.838118 159.971354 
+L 97.433153 153.568135 
+L 98.325706 140.757221 
+L 99.218258 123.9465 
+L 100.408328 96.379822 
+L 102.490951 46.796532 
+L 103.085986 36.344828 
+L 103.681021 29.050772 
+L 103.978539 26.773452 
+L 104.276056 25.475364 
+L 104.573574 25.182462 
+L 104.871091 25.900597 
+L 105.168609 27.615401 
+L 105.763644 33.879632 
+L 106.358679 43.488955 
+L 107.251231 62.563638 
+L 110.226406 132.39534 
+L 111.118959 147.325806 
+L 112.011512 158.282334 
+L 112.904064 165.732733 
+L 113.499099 169.126494 
+L 114.094134 171.546466 
+L 114.689169 173.219577 
+L 115.284204 174.341684 
+L 115.879239 175.072003 
+L 116.474274 175.533433 
+L 117.366827 175.912063 
+L 118.556897 176.114405 
+L 120.937037 176.194518 
+L 141.168228 176.2 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #bf00bf; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 43.88 176.2 
+L 292.902162 176.11221 
+L 294.38975 175.920759 
+L 295.57982 175.543113 
+L 296.472372 175.002374 
+L 297.067407 174.447204 
+L 297.662442 173.674429 
+L 298.257477 172.617335 
+L 298.852513 171.196532 
+L 299.447548 169.320543 
+L 300.042583 166.88773 
+L 300.935135 161.957317 
+L 301.827688 155.168549 
+L 302.72024 146.21613 
+L 303.612793 134.928791 
+L 304.802863 116.369174 
+L 306.29045 89.028733 
+L 308.373073 50.887983 
+L 309.265626 38.125857 
+L 309.860661 31.750857 
+L 310.455696 27.422996 
+L 310.753213 26.092264 
+L 311.050731 25.339721 
+L 311.348248 25.174134 
+L 311.645766 25.597458 
+L 311.943283 26.604751 
+L 312.538318 30.317693 
+L 313.133353 36.142736 
+L 314.025906 48.248783 
+L 315.215976 68.810934 
+L 318.191151 123.468669 
+L 319.381221 140.633702 
+L 320.273774 150.792324 
+L 321.166326 158.676042 
+L 322.058879 164.53081 
+L 322.951431 168.697772 
+L 323.843984 171.543272 
+L 324.736537 173.409304 
+L 325.629089 174.585324 
+L 326.521642 175.298015 
+L 327.414194 175.713532 
+L 328.604264 175.997795 
+L 330.389369 176.151801 
+L 334.554615 176.199017 
+L 341.1 176.2 
+L 341.1 176.2 
+" clip-path="url(#p68d353a283)" style="fill: none; stroke: #bfbf00; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 43.88 176.2 
+L 43.88 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 341.1 176.2 
+L 341.1 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 43.88 176.2 
+L 341.1 176.2 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 43.88 25.16 
+L 341.1 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_7">
+      <defs>
+       <path id="m1dc38cb91c" d="M 0 0 
+L 0 -4 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="43.88" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_8">
+      <defs>
+       <path id="m00febdcbcf" d="M 0 0 
+L 0 4 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m00febdcbcf" x="43.88" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="43.88" y="187.797656" transform="rotate(-0 43.88 187.797656)">−2.0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="81.0325" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="81.0325" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="81.0325" y="187.797656" transform="rotate(-0 81.0325 187.797656)">−1.5</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="118.185" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="118.185" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="118.185" y="187.797656" transform="rotate(-0 118.185 187.797656)">−1.0</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="155.3375" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="155.3375" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="155.3375" y="187.797656" transform="rotate(-0 155.3375 187.797656)">−0.5</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="192.49" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="192.49" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="192.49" y="187.797656" transform="rotate(-0 192.49 187.797656)">0.0</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="229.6425" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="229.6425" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="229.6425" y="187.797656" transform="rotate(-0 229.6425 187.797656)">0.5</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="266.795" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="266.795" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="266.795" y="187.797656" transform="rotate(-0 266.795 187.797656)">1.0</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_21">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="303.9475" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="303.9475" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="303.9475" y="187.797656" transform="rotate(-0 303.9475 187.797656)">1.5</text>
+     </g>
+    </g>
+    <g id="xtick_9">
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#m1dc38cb91c" x="341.1" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#m00febdcbcf" x="341.1" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="341.1" y="187.797656" transform="rotate(-0 341.1 187.797656)">2.0</text>
+     </g>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="192.49" y="202.797656" transform="rotate(-0 192.49 202.797656)">x</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_25">
+      <defs>
+       <path id="m6e45b11047" d="M 0 0 
+L 4 0 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_26">
+      <defs>
+       <path id="m6d97c36ba6" d="M 0 0 
+L -4 0 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="178.797656" transform="rotate(-0 39.88 178.797656)">0.0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_27">
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="145.992" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="145.992" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="148.589656" transform="rotate(-0 39.88 148.589656)">0.2</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_29">
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="115.784" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_30">
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="115.784" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="118.381656" transform="rotate(-0 39.88 118.381656)">0.4</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_31">
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="85.576" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_32">
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="85.576" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="88.173656" transform="rotate(-0 39.88 88.173656)">0.6</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_33">
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="55.368" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_34">
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="55.368" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="57.965656" transform="rotate(-0 39.88 57.965656)">0.8</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_35">
+      <g>
+       <use xlink:href="#m6e45b11047" x="43.88" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_36">
+      <g>
+       <use xlink:href="#m6d97c36ba6" x="341.1" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="39.88" y="27.757656" transform="rotate(-0 39.88 27.757656)">1.0</text>
+     </g>
+    </g>
+    <g id="text_17">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="13.976875" y="98.277656" transform="rotate(-0 13.976875 98.277656)">y</text>
+    </g>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 12px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="192.49" y="20.16" transform="rotate(-0 192.49 20.16)">Bases for fit</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p68d353a283">
+   <rect x="43.88" y="25.16" width="297.22" height="151.04"/>
+  </clipPath>
+ </defs>
+</svg>
+                </div>
+            </div>
+            <div class="artifact-card" id="art-artifacts_fit_svg">
+                <div class="artifact-header">
+                    <span class="artifact-title">
+                        <span class="artifact-name">artifacts/fit.svg</span>
+                    </span>
+                    <span class="badge badge-plot">Vector SVG</span>
+                </div>
+                <div class="svg-container">
+                    <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="360pt" height="216pt" viewBox="0 0 360 216" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-09T16:46:22.910217</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 216 
+L 360 216 
+L 360 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 52.16 176.2 
+L 341.1 176.2 
+L 341.1 25.16 
+L 52.16 25.16 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 52.16 100.68 
+L 55.078586 97.56435 
+L 57.997172 94.461245 
+L 60.915758 91.383181 
+L 63.834343 88.342552 
+L 66.752929 85.351602 
+L 69.671515 82.422373 
+L 72.590101 79.566662 
+L 75.508687 76.795966 
+L 78.427273 74.121444 
+L 81.345859 71.553863 
+L 84.264444 69.103563 
+L 87.18303 66.78041 
+L 90.101616 64.593758 
+L 93.020202 62.552413 
+L 95.938788 60.664595 
+L 98.857374 58.937904 
+L 101.77596 57.379294 
+L 104.694545 55.995041 
+L 107.613131 54.790719 
+L 110.531717 53.771176 
+L 113.450303 52.940519 
+L 116.368889 52.302091 
+L 119.287475 51.858464 
+L 122.206061 51.611425 
+L 125.124646 51.561967 
+L 128.043232 51.710291 
+L 130.961818 52.055798 
+L 133.880404 52.597097 
+L 136.79899 53.33201 
+L 139.717576 54.257576 
+L 142.636162 55.370068 
+L 145.554747 56.665008 
+L 148.473333 58.137181 
+L 151.391919 59.780659 
+L 154.310505 61.588823 
+L 157.229091 63.554395 
+L 160.147677 65.669458 
+L 163.066263 67.925496 
+L 165.984848 70.313424 
+L 168.903434 72.823629 
+L 171.82202 75.446001 
+L 174.740606 78.169981 
+L 177.659192 80.984602 
+L 180.577778 83.878529 
+L 183.496364 86.840109 
+L 186.414949 89.857418 
+L 189.333535 92.918305 
+L 192.252121 96.010446 
+L 195.170707 99.12139 
+L 198.089293 102.23861 
+L 201.007879 105.349554 
+L 203.926465 108.441695 
+L 206.845051 111.502582 
+L 209.763636 114.519891 
+L 212.682222 117.481471 
+L 215.600808 120.375398 
+L 218.519394 123.190019 
+L 221.43798 125.913999 
+L 224.356566 128.536371 
+L 227.275152 131.046576 
+L 230.193737 133.434504 
+L 233.112323 135.690542 
+L 236.030909 137.805605 
+L 238.949495 139.771177 
+L 241.868081 141.579341 
+L 244.786667 143.222819 
+L 247.705253 144.694992 
+L 250.623838 145.989932 
+L 253.542424 147.102424 
+L 256.46101 148.02799 
+L 259.379596 148.762903 
+L 262.298182 149.304202 
+L 265.216768 149.649709 
+L 268.135354 149.798033 
+L 271.053939 149.748575 
+L 273.972525 149.501536 
+L 276.891111 149.057909 
+L 279.809697 148.419481 
+L 282.728283 147.588824 
+L 285.646869 146.569281 
+L 288.565455 145.364959 
+L 291.48404 143.980706 
+L 294.402626 142.422096 
+L 297.321212 140.695405 
+L 300.239798 138.807587 
+L 303.158384 136.766242 
+L 306.07697 134.57959 
+L 308.995556 132.256437 
+L 311.914141 129.806137 
+L 314.832727 127.238556 
+L 317.751313 124.564034 
+L 320.669899 121.793338 
+L 323.588485 118.937627 
+L 326.507071 116.008398 
+L 329.425657 113.017448 
+L 332.344242 109.976819 
+L 335.262828 106.898755 
+L 338.181414 103.79565 
+L 341.1 100.68 
+" clip-path="url(#p996a4452b5)" style="fill: none; stroke-dasharray: 6,6; stroke-dashoffset: 0; stroke: #ff0000; stroke-width: 1.5"/>
+   </g>
+   <g id="line2d_2">
+    <defs>
+     <path id="m1c3f9bb1d5" d="M 0 3 
+C 0.795609 3 1.55874 2.683901 2.12132 2.12132 
+C 2.683901 1.55874 3 0.795609 3 0 
+C 3 -0.795609 2.683901 -1.55874 2.12132 -2.12132 
+C 1.55874 -2.683901 0.795609 -3 0 -3 
+C -0.795609 -3 -1.55874 -2.683901 -2.12132 -2.12132 
+C -2.683901 -1.55874 -3 -0.795609 -3 0 
+C -3 0.795609 -2.683901 1.55874 -2.12132 2.12132 
+C -1.55874 2.683901 -0.795609 3 0 3 
+z
+" style="stroke: #000000; stroke-width: 0.5"/>
+    </defs>
+    <g clip-path="url(#p996a4452b5)">
+     <use xlink:href="#m1c3f9bb1d5" x="266.824456" y="150.28798" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="330.662503" y="109.662623" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="303.221131" y="132.606602" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="246.837582" y="141.815869" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="294.225335" y="140.246712" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="52.831296" y="105.144323" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="234.617244" y="137.44458" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="178.506808" y="71.648009" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="143.56647" y="50.333333" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="334.441507" y="103.005267" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="207.716584" y="111.013886" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="89.642486" y="68.142662" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="190.69808" y="90.464563" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="321.317978" y="116.077625" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="150.762638" y="55.933102" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="250.104379" y="150.469362" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="264.437586" y="142.801133" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="335.127428" y="102.900208" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="207.82567" y="119.162703" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="69.257932" y="93.43562" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="254.510527" y="149.609413" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="84.324339" y="66.38007" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="268.901797" y="146.910356" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="229.96574" y="132.727023" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="322.177264" y="123.100592" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="82.284539" y="67.593416" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="251.490864" y="140.021775" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="143.955668" y="52.874444" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="73.902656" y="80.857494" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="323.702285" y="118.689545" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="183.562066" y="81.347539" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="148.887665" y="65.366595" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="205.595765" y="107.38402" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="167.026875" y="65.837903" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="55.308048" y="103.048442" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="59.975737" y="88.244237" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="226.460235" y="125.563297" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="190.936712" y="91.364358" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="130.492675" y="51.247954" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="220.821854" y="117.912447" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="208.589974" y="113.588939" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="96.968591" y="62.94046" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="95.757874" y="55.763143" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="155.486855" y="57.570363" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="278.156845" y="151.417912" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="321.252498" y="119.463637" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="336.666967" y="102.477387" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="265.270065" y="147.162947" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="324.076704" y="118.562289" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     <use xlink:href="#m1c3f9bb1d5" x="210.153802" y="113.947866" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+    </g>
+   </g>
+   <g id="line2d_3">
+    <path d="M 52.16 96.661613 
+L 55.078586 95.462404 
+L 57.997172 94.137732 
+L 60.915758 92.684442 
+L 63.834343 91.101141 
+L 66.752929 89.388443 
+L 69.671515 87.549228 
+L 72.590101 85.588879 
+L 75.508687 83.515426 
+L 78.427273 81.339714 
+L 81.345859 79.075447 
+L 84.264444 76.739168 
+L 87.18303 74.350184 
+L 90.101616 71.930388 
+L 93.020202 69.504005 
+L 95.938788 67.097227 
+L 98.857374 64.737805 
+L 101.77596 62.454546 
+L 104.694545 60.276744 
+L 107.613131 58.233593 
+L 110.531717 56.353536 
+L 113.450303 54.663643 
+L 116.368889 53.188964 
+L 119.287475 51.951935 
+L 122.206061 50.971852 
+L 125.124646 50.264387 
+L 128.043232 49.841234 
+L 130.961818 49.70983 
+L 133.880404 49.873214 
+L 136.79899 50.329999 
+L 139.717576 51.074498 
+L 142.636162 52.096931 
+L 145.554747 53.383824 
+L 148.473333 54.9184 
+L 151.391919 56.681195 
+L 154.310505 58.65065 
+L 157.229091 60.803784 
+L 160.147677 63.116885 
+L 163.066263 65.566245 
+L 165.984848 68.128779 
+L 168.903434 70.782688 
+L 171.82202 73.508006 
+L 174.740606 76.287021 
+L 177.659192 79.104645 
+L 180.577778 81.948639 
+L 183.496364 84.809657 
+L 186.414949 87.681215 
+L 189.333535 90.559515 
+L 192.252121 93.443053 
+L 195.170707 96.332229 
+L 198.089293 99.228768 
+L 201.007879 102.135114 
+L 203.926465 105.053692 
+L 206.845051 107.986239 
+L 209.763636 110.93309 
+L 212.682222 113.892516 
+L 215.600808 116.860111 
+L 218.519394 119.828398 
+L 221.43798 122.78638 
+L 224.356566 125.719427 
+L 227.275152 128.609271 
+L 230.193737 131.434168 
+L 233.112323 134.169295 
+L 236.030909 136.787351 
+L 238.949495 139.259189 
+L 241.868081 141.55476 
+L 244.786667 143.644048 
+L 247.705253 145.498095 
+L 250.623838 147.090101 
+L 253.542424 148.39636 
+L 256.46101 149.397243 
+L 259.379596 150.078016 
+L 262.298182 150.429486 
+L 265.216768 150.448447 
+L 268.135354 150.137936 
+L 271.053939 149.507246 
+L 273.972525 148.571699 
+L 276.891111 147.352247 
+L 279.809697 145.874804 
+L 282.728283 144.169501 
+L 285.646869 142.269715 
+L 288.565455 140.211145 
+L 291.48404 138.030695 
+L 294.402626 135.765494 
+L 297.321212 133.451892 
+L 300.239798 131.124582 
+L 303.158384 128.815732 
+L 306.07697 126.554472 
+L 308.995556 124.366302 
+L 311.914141 122.272809 
+L 314.832727 120.291474 
+L 317.751313 118.435682 
+L 320.669899 116.714776 
+L 323.588485 115.134366 
+L 326.507071 113.696602 
+L 329.425657 112.400591 
+L 332.344242 111.242818 
+L 335.262828 110.217633 
+L 338.181414 109.317676 
+L 341.1 108.534373 
+" clip-path="url(#p996a4452b5)" style="fill: none; stroke: #0000ff; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 52.16 176.2 
+L 52.16 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 341.1 176.2 
+L 341.1 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 52.16 176.2 
+L 341.1 176.2 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 52.16 25.16 
+L 341.1 25.16 
+" style="fill: none; stroke: #000000; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_4">
+      <defs>
+       <path id="mb4037997cc" d="M 0 0 
+L 0 -4 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#mb4037997cc" x="52.16" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_5">
+      <defs>
+       <path id="m936224d811" d="M 0 0 
+L 0 4 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m936224d811" x="52.16" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="52.16" y="187.797656" transform="rotate(-0 52.16 187.797656)">0.0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mb4037997cc" x="109.948" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m936224d811" x="109.948" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="109.948" y="187.797656" transform="rotate(-0 109.948 187.797656)">0.2</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mb4037997cc" x="167.736" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m936224d811" x="167.736" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="167.736" y="187.797656" transform="rotate(-0 167.736 187.797656)">0.4</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#mb4037997cc" x="225.524" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m936224d811" x="225.524" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="225.524" y="187.797656" transform="rotate(-0 225.524 187.797656)">0.6</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#mb4037997cc" x="283.312" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m936224d811" x="283.312" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="283.312" y="187.797656" transform="rotate(-0 283.312 187.797656)">0.8</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#mb4037997cc" x="341.1" y="176.2" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m936224d811" x="341.1" y="25.16" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="341.1" y="187.797656" transform="rotate(-0 341.1 187.797656)">1.0</text>
+     </g>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="196.63" y="202.797656" transform="rotate(-0 196.63 202.797656)">x</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_16">
+      <defs>
+       <path id="mf6e16a4d91" d="M 0 0 
+L 4 0 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="174.366324" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_17">
+      <defs>
+       <path id="m02e7d44707" d="M 0 0 
+L -4 0 
+" style="stroke: #000000; stroke-width: 0.5"/>
+      </defs>
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="174.366324" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="176.96398" transform="rotate(-0 48.16 176.96398)">−1.5</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="149.804216" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="149.804216" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="152.401872" transform="rotate(-0 48.16 152.401872)">−1.0</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="125.242108" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_21">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="125.242108" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="127.839764" transform="rotate(-0 48.16 127.839764)">−0.5</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="100.68" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="100.68" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="103.277656" transform="rotate(-0 48.16 103.277656)">0.0</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="76.117892" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_25">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="76.117892" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="78.715548" transform="rotate(-0 48.16 78.715548)">0.5</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="51.555784" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_27">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="51.555784" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="54.15344" transform="rotate(-0 48.16 54.15344)">1.0</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#mf6e16a4d91" x="52.16" y="26.993676" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="line2d_29">
+      <g>
+       <use xlink:href="#m02e7d44707" x="341.1" y="26.993676" style="stroke: #000000; stroke-width: 0.5"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="48.16" y="29.591332" transform="rotate(-0 48.16 29.591332)">1.5</text>
+     </g>
+    </g>
+    <g id="text_15">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="13.877188" y="98.277656" transform="rotate(-0 13.877188 98.277656)">y</text>
+    </g>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 12px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="196.63" y="20.16" transform="rotate(-0 196.63 20.16)">Regression Fit</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_7">
+     <path d="M 226.261875 88.762813 
+L 335.1 88.762813 
+L 335.1 31.16 
+L 226.261875 31.16 
+z
+" style="fill: #ffffff; stroke: #000000; stroke-linejoin: miter"/>
+    </g>
+    <g id="line2d_30">
+     <path d="M 234.661875 40.878125 
+L 251.461875 40.878125 
+" style="fill: none; stroke-dasharray: 6,6; stroke-dashoffset: 0; stroke: #ff0000; stroke-width: 1.5"/>
+    </g>
+    <g id="text_17">
+     <text style="font-size: 12px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="264.661875" y="45.078125" transform="rotate(-0 264.661875 45.078125)">True Sin</text>
+    </g>
+    <g id="line2d_31">
+     <g>
+      <use xlink:href="#m1c3f9bb1d5" x="234.661875" y="58.879063" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+      <use xlink:href="#m1c3f9bb1d5" x="251.461875" y="58.879063" style="fill: #008000; stroke: #000000; stroke-width: 0.5"/>
+     </g>
+    </g>
+    <g id="text_18">
+     <text style="font-size: 12px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="264.661875" y="63.079063" transform="rotate(-0 264.661875 63.079063)">Noisy Sin</text>
+    </g>
+    <g id="line2d_32">
+     <path d="M 234.661875 76.88 
+L 251.461875 76.88 
+" style="fill: none; stroke: #0000ff; stroke-linecap: square"/>
+    </g>
+    <g id="text_19">
+     <text style="font-size: 12px; font-family: 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="264.661875" y="81.08" transform="rotate(-0 264.661875 81.08)">Regression</text>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p996a4452b5">
+   <rect x="52.16" y="25.16" width="288.94" height="151.04"/>
+  </clipPath>
+ </defs>
+</svg>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleAllCards(expand) {
+            const cards = document.querySelectorAll('details.file-card');
+            cards.forEach(card => {
+                card.open = expand;
+            });
+        }
+
+        window.addEventListener('beforeprint', () => {
+            toggleAllCards(true);
+        });
+    </script>
+</body>
+</html>

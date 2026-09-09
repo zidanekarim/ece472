@@ -53,7 +53,7 @@ class NNXBasisExpansion(nnx.Module):
         # src: https://flax.readthedocs.io/en/stable/api_reference/flax.nnx/variables.html
         # param required for learnable & automatic diff
         self.mu = nnx.Param(
-            jax.random.uniform(key, (self.M,), minval=0.0, maxval=1.0)
+            jnp.linspace(0.0, 1.0, num=self.M)
         )  # had to ask about min/max, but makes sense since we are sampling x from (0,1)
         # log sig here cuz theyll die out otherwise, thanks Josh Miao
         self.sig = nnx.Param(

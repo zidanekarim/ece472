@@ -45,7 +45,7 @@ class MLP(nnx.Module):
         self.hidden_activation = hidden_activation
         self.output_activation=output_activation
         
-        self.in_layer = layers.append(NNXLinearModel(rngs, num_inputs, hidden_layer_width)) # first layer hidden
+        layers.append(NNXLinearModel(rngs, num_inputs, hidden_layer_width)) # first layer hidden
         for i in range(num_hidden_layers-1):
             layers.append(NNXLinearModel(rngs, hidden_layer_width, hidden_layer_width))
         
@@ -60,7 +60,7 @@ class MLP(nnx.Module):
 
 
 class SwiGLU(nnx.Module):
-    def __init__(self,  num_inputs: int, num_outputs: int,* rngs:nnx.Rngs):
+    def __init__(self,  num_inputs: int, num_outputs: int,*, rngs:nnx.Rngs):
         self.W1 = NNXLinearModel(rngs, num_inputs, num_outputs)
         self.W2 = NNXLinearModel(rngs, num_inputs, num_outputs)
     
@@ -71,10 +71,11 @@ class SwiGLU(nnx.Module):
 
 class SwiGLUWrapper(nnx.Module):
     def __init__(self, dimension: int, *, rngs: nnx.Rngs):
+        self.norm = nnx.LayerNorm(dimension, rngs=rngs) # without normalization, SwiGLU loss is extremely high (50+)
         self.swiglu = SwiGLU(dimension, dimension, rngs=rngs)
     
     def __call__(self, x: jax.Array) -> jax.Array:
-        return x + self.swiglu(x) # h = x + SwiGLU(X), see https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/ for where I saw resnet formula
+        return x + self.swiglu(self.norm(x)) # h = x + SwiGLU(X), see https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/ for where I saw resnet formula
 
 
 class SwiGLUMLP(nnx.Module):
@@ -85,7 +86,7 @@ class SwiGLUMLP(nnx.Module):
         layers = []
         for i in range(num_hidden_layers):
             layers.append(SwiGLUWrapper(hidden_layer_width, rngs=rngs)) 
-        slef.layers = nnx.List(layers)
+        self.layers = nnx.List(layers)
         self.out_layer = NNXLinearModel( rngs=rngs, in_features=hidden_layer_width, out_features=num_outputs)
 
     def __call__(self, x: jax.Array) -> jax.Array:

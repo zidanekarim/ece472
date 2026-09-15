@@ -27,6 +27,7 @@ def plot_training_samples(
     model: MLP,
     data: Data,
     settings: PlottingSettings,
+    instance: str, 
 ):
 
     log.info("Plotting decision boundary")
@@ -39,7 +40,7 @@ def plot_training_samples(
 
 
     clf = SK_NNXClassifier(model)
-    
+
     clf.fit(np.asarray(data.X), np.asarray(data.Y))
 
     display = DecisionBoundaryDisplay.from_estimator(
@@ -62,10 +63,12 @@ def plot_training_samples(
     )
 
     plt.tight_layout()
+    plt.title(instance)
+
 
     settings.output_dir.mkdir(parents=True, exist_ok=True)
-    svg_path = settings.output_dir / "decision_boundary.svg"
-    pdf_path = settings.output_dir / "decision_boundary.pdf"
+    svg_path = settings.output_dir / f"decision_boundary_{instance}.svg"
+    pdf_path = settings.output_dir / f"decision_boundary_{instance}.pdf"
     plt.savefig(svg_path)
     plt.savefig(pdf_path)
     plt.close(fig)

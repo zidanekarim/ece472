@@ -38,7 +38,7 @@ def main() -> None:
     num_hidden_layers = 3
     hidden_layer_width = 64
     data_x, data_y = data.X, data.Y
-    model = MLP(
+    model1 = MLP(
         num_inputs=2,             # x1, x2
         num_outputs=2,            #
         num_hidden_layers=num_hidden_layers,
@@ -52,14 +52,35 @@ def main() -> None:
 
     #log.debug("Initial model", model=model.model)
 
-    optimizer = nnx.Optimizer(
-        model, optax.adam(settings.training.learning_rate), wrt=nnx.Param
+    optimizer1 = nnx.Optimizer(
+        model1, optax.adam(settings.training.learning_rate), wrt=nnx.Param
     )
 
-    train(model, optimizer, data, settings.training, np_rng)
+    train(model1, optimizer1, data, settings.training, np_rng)
 
     #log.debug("Trained model", model=model.model)
-    plot_training_samples(model, data, settings.plotting)
+    plot_training_samples(model1, data, settings.plotting, "MLP")
+
+
+
+
+
+    model2 = SwiGLUMLP(
+        num_inputs=2,             # x1, x2
+        num_outputs=2,            #
+        num_hidden_layers=num_hidden_layers,
+        hidden_layer_width=hidden_layer_width, 
+        output_activation=nnx.identity,
+        rngs=nnx.Rngs(params=model_key),
+    )
+
+    optimizer2 = nnx.Optimizer(
+        model2, optax.adam(settings.training.learning_rate), wrt=nnx.Param
+    )
+
+    train(model2, optimizer2, data, settings.training, np_rng)
+
+    plot_training_samples(model2, data, settings.plotting, "SwiGLU-MLP")
 
     # if settings.data.num_features == 1:
     #     plot_fit(model, data, settings.plotting)

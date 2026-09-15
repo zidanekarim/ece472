@@ -8,7 +8,7 @@ from .config import load_settings
 from .data import Data
 from .logging import configure_logging
 from .model import LinearModel, NNXLinearModel, SwiGLUMLP, MLP
-from .plotting import plot_training_samples
+from .plotting import plot_training_samples, plot_extrapolation
 from .training import train
 
 
@@ -82,6 +82,15 @@ def main() -> None:
 
     plot_training_samples(model2, data, settings.plotting, "SwiGLU-MLP")
 
+    plot_extrapolation(model1, data, settings.plotting, "MLP")
+    plot_extrapolation(model2, data, settings.plotting, "SwiGLU-MLP")
+
+    print(
+        """
+        Explanation of cartesian boundary failure:
+        
+        """
+    )
     # if settings.data.num_features == 1:
     #     plot_fit(model, data, settings.plotting)
     # else:

@@ -11,6 +11,9 @@ from .config import PlottingSettings
 from .data import Data
 from .model import LinearModel, NNXLinearModel, SK_NNXClassifier, MLP
 
+## Thanks Josh Miao EE '27 for confirming my plots
+
+
 log = structlog.get_logger()
 
 font = {
@@ -75,8 +78,53 @@ def plot_training_samples(
     log.info("Saved plot", path=str(svg_path))
 
 
+def plot_extrapolation(model, data, settings, instance):
+    log.info("Plotting decision boundary")
+    fig, ax = plt.subplots(1, 1, figsize=settings.figsize, dpi=settings.dpi)
+
+    ax.set_title("Decision boundary")
+    ax.set_xlabel("x1")
+    h = ax.set_ylabel("x2", labelpad=10)
+    h.set_rotation(0)
 
 
+    clf = SK_NNXClassifier(model)
+
+    clf.fit(np.asarray(data.X), np.asarray(data.Y))
+
+    clf_extended = np.max(np.abs(data.X)) * 2
+    points = np.array([[-clf_extended, -clf_extended], [clf_extended, clf_extended]]) # 2x2
+
+    display = DecisionBoundaryDisplay.from_estimator(
+        clf, points,
+        response_method="predict_proba",
+        class_of_interest=1, # P(t=1 | x)
+        alpha=0.5,
+        grid_resolution=300,
+        cmap="RdBu",#red blue
+        ax=ax, # same plot? 
+    )
+
+    ax.scatter(
+        np.asarray(data.X)[:, 0],
+        np.asarray(data.X)[:, 1],
+        c=np.asarray(data.Y).astype(int),
+        cmap="RdBu",
+        edgecolors="black",
+        s=15,
+    )
+
+    plt.tight_layout()
+    plt.title(f"{instance} Extrapolation")
+
+
+    settings.output_dir.mkdir(parents=True, exist_ok=True)
+    svg_path = settings.output_dir / f"decision_boundary_{instance}_extrapolation.svg"
+    pdf_path = settings.output_dir / f"decision_boundary_{instance}_extrapolation.pdf"
+    plt.savefig(svg_path)
+    plt.savefig(pdf_path)
+    plt.close(fig)
+    log.info("Saved plot", path=str(svg_path))
 
 
 

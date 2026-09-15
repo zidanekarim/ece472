@@ -12,7 +12,7 @@ class Data:
     X: np.ndarray = field(init=False)
     Y: np.ndarray = field(init=False) # cuz we are not propagating this value beforehand
     def two_spiral_generator(
-        self, turns: int = 3, points: int=100, *, rng: np.random.Generator
+        self, turns: int = 2, points: int=100, *, rng: np.random.Generator
     ):
         """Generates two spirals in order to avoid over-parameterizing this function"""
         temp_radius = np.linspace(1, 13, points) # roughly 13 from figure 2? this is a guess 
@@ -39,6 +39,5 @@ class Data:
         self, rng: np.random.Generator, batch_size: int
     ) -> tuple[np.ndarray, np.ndarray]:
         """Select random subset of examples for training batch."""
-        choices = rng.choice(self.index, size=batch_size)
-
-        return self.x[choices], self.y[choices].flatten()
+        choices = rng.choice(len(self.X), size=batch_size)
+        return self.X[choices], self.Y[choices].flatten()

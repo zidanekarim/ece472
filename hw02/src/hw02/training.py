@@ -7,19 +7,19 @@ from tqdm import trange
 from .config import TrainingSettings
 from .data import Data
 from .model import NNXLinearModel
-
+import optax
 log = structlog.get_logger()
 
 
 @nnx.jit
 def train_step(
-    model: NNXLinearModel, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
+    model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
 ):
     """Performs a single training step."""
 
-    def loss_fn(model: NNXLinearModel):
-        y_hat = model(x)
-        return 0.5 * jnp.mean((y_hat - y) ** 2)
+    def loss_fn(model):
+        logits = model(x)
+        return jnp.mean(optax.softmax_cross_entropy_with_integer_labels(logits, y))
 
     loss, grads = nnx.value_and_grad(loss_fn)(model)
     optimizer.update(model, grads)  # In-place update of model parameters
@@ -27,7 +27,7 @@ def train_step(
 
 
 def train(
-    model: NNXLinearModel,
+    model,
     optimizer: nnx.Optimizer,
     data: Data,
     settings: TrainingSettings,

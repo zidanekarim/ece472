@@ -27,19 +27,49 @@ def plot_training_samples(
     model: MLP,
     data: Data,
     settings: PlottingSettings,
-    X: np.ndarray,
-    Y: np.ndarray
 ):
+
+    log.info("Plotting decision boundary")
+    fig, ax = plt.subplots(1, 1, figsize=settings.figsize, dpi=settings.dpi)
+
+    ax.set_title("Decision boundary")
+    ax.set_xlabel("x1")
+    h = ax.set_ylabel("x2", labelpad=10)
+    h.set_rotation(0)
+
+
     clf = SK_NNXClassifier(model)
+    
+    clf.fit(np.asarray(data.X), np.asarray(data.Y))
 
     display = DecisionBoundaryDisplay.from_estimator(
-        clf, X,
+        clf, np.asarray(data.X),
         response_method="predict_proba",
         class_of_interest=1, # P(t=1 | x)
         alpha=0.5,
         grid_resolution=300,
+        cmap="RdBu",#red blue
+        ax=ax, # same plot? 
     )
 
+    ax.scatter(
+        np.asarray(data.X)[:, 0],
+        np.asarray(data.X)[:, 1],
+        c=np.asarray(data.Y).astype(int),
+        cmap="RdBu",
+        edgecolors="black",
+        s=15,
+    )
+
+    plt.tight_layout()
+
+    settings.output_dir.mkdir(parents=True, exist_ok=True)
+    svg_path = settings.output_dir / "decision_boundary.svg"
+    pdf_path = settings.output_dir / "decision_boundary.pdf"
+    plt.savefig(svg_path)
+    plt.savefig(pdf_path)
+    plt.close(fig)
+    log.info("Saved plot", path=str(svg_path))
 
 
 

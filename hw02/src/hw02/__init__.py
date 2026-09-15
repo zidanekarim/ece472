@@ -7,8 +7,8 @@ from flax import nnx
 from .config import load_settings
 from .data import Data
 from .logging import configure_logging
-from .model import LinearModel, NNXLinearModel
-from .plotting import compare_linear_models, plot_fit
+from .model import LinearModel, NNXLinearModel, SwiGLUMLP, MLP
+from .plotting import plot_training_samples
 from .training import train
 
 
@@ -33,12 +33,24 @@ def main() -> None:
     data = Data(
         noise=settings.data.sigma_noise,
     )
-    data_x, data_y = data.two_spiral_generator(rng=np_rng)
+    data.two_spiral_generator(rng=np_rng)
 
-    model = NNXLinearModel(
-        rngs=nnx.Rngs(params=model_key), num_features=settings.data.num_features
+    num_hidden_layers = 3
+    hidden_layer_width = 64
+    data_x, data_y = data.X, data.Y
+    model = MLP(
+        num_inputs=2,             # x1, x2
+        num_outputs=2,            #
+        num_hidden_layers=num_hidden_layers,
+        hidden_layer_width=hidden_layer_width, 
+        hidden_activation=nnx.gelu,
+        output_activation=nnx.identity,
+        rngs=nnx.Rngs(params=model_key),
     )
-    log.debug("Initial model", model=model.model)
+
+
+
+    #log.debug("Initial model", model=model.model)
 
     optimizer = nnx.Optimizer(
         model, optax.adam(settings.training.learning_rate), wrt=nnx.Param
@@ -46,10 +58,10 @@ def main() -> None:
 
     train(model, optimizer, data, settings.training, np_rng)
 
-    log.debug("Trained model", model=model.model)
+    #log.debug("Trained model", model=model.model)
+    plot_training_samples(model, data, settings.plotting)
 
-
-    if settings.data.num_features == 1:
-        plot_fit(model, data, settings.plotting)
-    else:
-        log.info("Skipping plotting for multi-feature models.")
+    # if settings.data.num_features == 1:
+    #     plot_fit(model, data, settings.plotting)
+    # else:
+    #     log.info("Skipping plotting for multi-feature models.")

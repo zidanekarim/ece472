@@ -4,10 +4,12 @@ import matplotlib.style
 import jax.numpy as jnp
 import numpy as np
 import structlog
+from sklearn.linear_model import LogisticRegression # this was on the docs so I included just in case
+from sklearn.inspection import DecisionBoundaryDisplay # custom prediction functions for grids
 
 from .config import PlottingSettings
 from .data import Data
-from .model import LinearModel, NNXLinearModel
+from .model import LinearModel, NNXLinearModel, SK_NNXClassifier, MLP
 
 log = structlog.get_logger()
 
@@ -21,14 +23,28 @@ matplotlib.rc("font", **font)
 plt.rcParams["svg.fonttype"] = "none"
 
 
-def compare_linear_models(a: LinearModel, b: LinearModel):
-    """Prints a comparison of two linear models."""
-    log.info("Comparing models", true=a, estimated=b)
-    print("w,    w_hat")
-    for w_a, w_b in zip(a.weights, b.weights):
-        print(f"{w_a:0.2f}, {w_b:0.2f}")
+def plot_training_samples(
+    model: MLP,
+    data: Data,
+    settings: PlottingSettings,
+    X: np.ndarray,
+    Y: np.ndarray
+):
+    clf = SK_NNXClassifier(model)
 
-    print(f"{a.bias:0.2f}, {b.bias:0.2f}")
+    display = DecisionBoundaryDisplay.from_estimator(
+        clf, X,
+        response_method="predict_proba",
+        class_of_interest=1, # P(t=1 | x)
+        alpha=0.5,
+        grid_resolution=300,
+    )
+
+
+
+
+
+
 
 
 def plot_fit(

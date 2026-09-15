@@ -28,15 +28,12 @@ def main() -> None:
     #     weights=np_rng.integers(low=0, high=5, size=(settings.data.num_features)),
     #     bias=2,
     # )
-    log.debug("Data generating model", model=data_generating_model)
+    #log.debug("Data generating model", model=data_generating_model)
 
     data = Data(
-        model=data_generating_model,
-        rng=np_rng,
-        num_features=settings.data.num_features,
-        num_samples=settings.data.num_samples,
-        sigma=settings.data.sigma_noise,
+        noise=settings.data.sigma_noise,
     )
+    data_x, data_y = data.two_spiral_generator(rng=np_rng)
 
     model = NNXLinearModel(
         rngs=nnx.Rngs(params=model_key), num_features=settings.data.num_features

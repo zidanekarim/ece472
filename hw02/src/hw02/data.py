@@ -9,11 +9,13 @@ from .model import LinearModel
 class Data:
     """Handles generation of synthetic data for linear regression."""
     noise: float
+    X: np.ndarray = field(init=False)
+    Y: np.ndarray = field(init=False) # cuz we are not propagating this value beforehand
     def two_spiral_generator(
-        self, n_turns: int = 3, points: int=100, *, rng: np.random.Generator
+        self, turns: int = 3, points: int=100, *, rng: np.random.Generator
     ):
         """Generates two spirals in order to avoid over-parameterizing this function"""
-        temp_radius = np.linspace(1, 10, points)
+        temp_radius = np.linspace(1, 13, points) # roughly 13 from figure 2? this is a guess 
         radius = rng.normal(loc=temp_radius, scale=self.noise)
         theta = np.linspace(0.0, turns * 2.0 * np.pi, points)
 
@@ -27,10 +29,10 @@ class Data:
         set1 = -set0
 
         X = np.vstack([set0, set1])
-        Y = np.concatenate([np.zeros(points), np.ones(points)]).astype(int)
+        Y = np.concatenate([np.zeros(points), np.ones(points)]).astype(int) # had to search a bunch for concatenate function
 
-        idx = rng.permutation(len(y))
-        return X[idx], Y[idx]
+        idx = rng.permutation(len(Y))
+        self.X, self.Y = X[idx], Y[idx]
         
 
     def get_batch(

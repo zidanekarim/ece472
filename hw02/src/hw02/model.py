@@ -13,6 +13,26 @@ class LinearModel:
     weights: np.ndarray
     bias: float
 
+
+class SK_NNXClassifier:
+    """Allows a Flax NNX model to be used with scikit-learn. DecisionBoundaryDisplay 
+    builds a 2d grid of points and calls the model to get predictions for each point. This wrapper is necessary because the model is not a scikit-learn model and does not have a predict method. 
+    """ 
+    def __init__(self, model):
+        self.model = model
+        self.classes = np.array([0,1] ) # 0, 1 because its either red or blue. this is used by DecisionBoundaryDisplay to determine the classes of the model.
+    
+    def predict_proba(self, X):
+        """Returns the predicted class probabilities for the input data."""
+        X = jnp.asarray(X)
+        logits = self.model(X)
+        probs = jax.nn.softmax(logits, axis=-1)
+        return np.array(probs) # convert back to numpy array for sklearn 
+    
+    def predict(self, X):
+        proba = self.predict_proba(X)
+        return np.argmax(proba, axis=-1) # returns the index of the max probability
+
 class MLP(nnx.Module):
     
 
@@ -23,7 +43,7 @@ class MLP(nnx.Module):
         
         layers.append(NNXLinearModel(rngs, num_inputs, hidden_layer_width)) # first layer hidden
         for i in range(num_hidden_layers-1):
-            layers.append(Linear(hidden_layer_width, hidden_layer_width, rngs=rngs))
+            layers.append(NNXLinearModel(rngs, hidden_layer_width, hidden_layer_width))
         
         self.hidden_layers = nnx.List(layers)
         self.out_layer = NNXLinearModel(hidden_layer_width, num_outputs, rngs=rngs) 

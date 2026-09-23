@@ -37,12 +37,25 @@ class Classifier(nnx.Module):
                 kernel_sizes: list[tuple[int, int]],
                 strides: list[int],
                 num_classes: int,
+                *, rngs
                 ):
         self.conv_layers = []
         self.input_channels = input_channels
-        
+        self.linear_layer = NNXLinearModel(rngs, in_features=layer_channels[-1], out_features=num_classes)
 
-         
+        for output_channel, kernel_size, stride in zip(layer_channels, kernel_sizes, strides): 
+            self.conv_layers.append(
+                Conv2d(in_features=self.input_channels, out_features=output_channel, kernel_size=kernel_size, strides=stride, padding="SAME", rngs=rngs) # padding="SAME" to keep the output size the same as input size
+            )
+            self.input_channels = output_channel # similar to resnet where we set the input channels to the output channels of the previous layer
+        
+    def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
+        for conv_layer in self.conv_layers:
+            x = nnx.relu(conv_layer(x)) # convultional layers commonly use ReLu as the activation function
+        x = jnp.mean(x, axis=(1, 2)) # global average pooling so model is invariant to input resolution
+        x = self.linear_layer(x)
+        return x
+        
 
 
 

@@ -13,16 +13,15 @@ log = structlog.get_logger()
 
 @nnx.jit
 def train_step(
-    model: NNXLinearModel, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
+    model: nnx.Model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
 ):
     """Performs a single training step."""
 
-    def loss_fn(model: NNXLinearModel):
-        y_hat = model(x)
-        return 0.5 * jnp.mean((y_hat - y) ** 2)
-
+    def loss_fn(model):
+        logits = model(x)
+        return jnp.mean(optax.softmax_cross_entropy_with_integer_labels(logits, y))
     loss, grads = nnx.value_and_grad(loss_fn)(model)
-    optimizer.update(model, grads)  # In-place update of model parameters
+    optimizer.update(model, grads)  # In-place update of model parameters, same as second assignment
     return loss
 
 
@@ -33,7 +32,6 @@ def train(
     settings: TrainingSettings,
     np_rng: np.random.Generator,
 ) -> None:
-    """Train the model using SGD."""
     log.info("Starting training", **settings.model_dump())
     bar = trange(settings.num_iters)
     for i in bar:

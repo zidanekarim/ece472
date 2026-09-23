@@ -7,7 +7,7 @@ from flax import nnx
 from .config import load_settings
 from .data import Data
 from .logging import configure_logging
-from .model import LinearModel, NNXLinearModel
+from .model import LinearModel, NNXLinearModel, Classifer
 from .plotting import compare_linear_models, plot_fit
 from .training import train
 
@@ -24,36 +24,34 @@ def main() -> None:
     data_key, model_key = jax.random.split(key)
     np_rng = np.random.default_rng(np.asarray(jax.random.key_data(data_key)))
 
-    data_generating_model = LinearModel(
-        weights=np_rng.integers(low=0, high=5, size=(settings.data.num_features)),
-        bias=2,
-    )
+
     log.debug("Data generating model", model=data_generating_model)
 
     data = Data(
-        model=data_generating_model,
-        rng=np_rng,
-        num_features=settings.data.num_features,
-        num_samples=settings.data.num_samples,
-        sigma=settings.data.sigma_noise,
+        batch_size=settings.training.batch_size
     )
 
-    model = NNXLinearModel(
-        rngs=nnx.Rngs(params=model_key), num_features=settings.data.num_features
+    model = Classifer(
+        input_channels=1, # mnist specs
+        layer_channels=[32, 64], 
+        kernel_sizes=[(3, 3), (3, 3)], 
+        strides=[1, 1],
+        num_classes=10, # digits 0-9
+        rngs=np_rng
     )
     log.debug("Initial model", model=model.model)
 
     optimizer = nnx.Optimizer(
-        model, optax.adam(settings.training.learning_rate), wrt=nnx.Param
+        model, optax.adamw(settings.training.learning_rate), wrt=nnx.Param
     )
 
     train(model, optimizer, data, settings.training, np_rng)
 
     log.debug("Trained model", model=model.model)
 
-    compare_linear_models(data.model, model.model)
+    # compare_linear_models(data.model, model.model)
 
-    if settings.data.num_features == 1:
-        plot_fit(model, data, settings.plotting)
-    else:
-        log.info("Skipping plotting for multi-feature models.")
+    # if settings.data.num_features == 1:
+    #     plot_fit(model, data, settings.plotting)
+    # else:
+    #     log.info("Skipping plotting for multi-feature models.")

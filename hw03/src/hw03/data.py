@@ -14,8 +14,8 @@ def preprocess(batch):
     return {"image": images, "label": labels}
 
 
-def load_mnist_dataset(batch_size):
-    dataset = load_dataset("mnist")
+def load_mnist_dataset():
+    dataset = load_dataset("ylecun/mnist")
     train_data = dataset["train"].map(preprocess, batched=True)
     validation_data = dataset["test"].map(preprocess, batched=True)
 
@@ -28,9 +28,13 @@ class Data:
     batch_size: int
 
     def __post_init__(self):
-        self.train_data, self.validation_data = load_mnist_dataset(self.batch_size)
+        self.train_data, self.validation_data = load_mnist_dataset()
         self.train_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
         self.validation_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
+
+        self.train_images = self.train_data["image"]
+        self.train_labels = self.train_data["label"]
+
 
         self.num_train_samples = len(self.train_data)
         self.index = np.arange(self.num_train_samples)
@@ -40,5 +44,5 @@ class Data:
     ) -> tuple[np.ndarray, np.ndarray]:
         """Select random subset of examples for training batch."""
         choices = rng.choice(self.index, size=batch_size, replace=False)
-        batch = self.train_data.select(choices)
+        batch = self.train_data[choices]
         return batch["image"], batch["label"]

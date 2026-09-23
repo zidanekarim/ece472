@@ -9,7 +9,7 @@ sigma_noise = 0.1
 [training]
 batch_size = 64
 num_iters = 4500 # less than 5 epochs
-learning_rate = 0.1
+learning_rate = 0.001
 
 [plotting]
 output_dir = "artifacts"

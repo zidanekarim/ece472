@@ -10,6 +10,7 @@ from .model import NNXLinearModel
 
 log = structlog.get_logger()
 
+# Changed this file heavily according to examples provided by Vaibhav Hariani, EE'26. Not in terms of this assignment itself, but steps to push my GPU since I was only hitting 5 it/s
 
 @nnx.jit
 def train_step(

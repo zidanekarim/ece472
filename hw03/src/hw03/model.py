@@ -5,7 +5,6 @@ import jax.numpy as jnp
 import numpy as np
 from flax import nnx
 
-
 @dataclass
 class LinearModel:
     """Represents a simple linear model."""
@@ -66,7 +65,7 @@ class NNXLinearModel(nnx.Module):
         key = rngs.params()
         self.in_features = in_features  # bc of MLP
         self.out_features = out_features
-        std = jnp.sqrt(1.0 / in_features)  # prevents vanishing gradients
+        std = jnp.sqrt(2.0 / in_features)  # prevents vanishing gradients, switched to He initialization
         self.w = nnx.Param(jax.random.normal(key, (in_features, out_features)) * std)
         self.b = nnx.Param(jnp.zeros((1, out_features)))  # broadcasts for output
 

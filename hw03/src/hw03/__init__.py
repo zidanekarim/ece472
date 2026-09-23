@@ -34,7 +34,7 @@ def main() -> None:
         input_channels=1, # mnist specs
         layer_channels=[32, 64], 
         kernel_sizes=[(3, 3), (3, 3)], 
-        strides=[1, 1],
+        strides=[1, 2, 2], # originally [1,1], which produced 91.2%
         num_classes=10, # digits 0-9
         rngs=nnx.Rngs(params=model_key)
     )

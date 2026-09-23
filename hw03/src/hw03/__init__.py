@@ -32,15 +32,15 @@ def main() -> None:
 
     model = Classifier(
         input_channels=1, # mnist specs
-        layer_channels=[32, 64], 
-        kernel_sizes=[(3, 3), (3, 3)], 
+        layer_channels=[32, 64, 128], 
+        kernel_sizes=[(3, 3), (3, 3), (3,3)], 
         strides=[1, 2, 2], # originally [1,1], which produced 91.2%
         num_classes=10, # digits 0-9
         rngs=nnx.Rngs(params=model_key)
     )
 
     optimizer = nnx.Optimizer(
-        model, optax.adamw(settings.training.learning_rate), wrt=nnx.Param
+        model, optax.adam(settings.training.learning_rate), wrt=nnx.Param
     )
 
     train(model, optimizer, data, settings.training, np_rng)

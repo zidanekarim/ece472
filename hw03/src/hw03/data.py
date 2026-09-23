@@ -32,9 +32,11 @@ class Data:
         self.train_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
         self.validation_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
 
-        self.train_images = self.train_data["image"]
-        self.train_labels = self.train_data["label"]
-
+        #self.train_images = self.train_data["image"]
+        #self.train_labels = self.train_data["label"]
+        batch = self.train_data[:]
+        self.train_images = np.asarray(batch["image"], dtype=np.float32)
+        self.train_labels = np.asarray(batch["label"], dtype=np.int32)
 
         self.num_train_samples = len(self.train_data)
         self.index = np.arange(self.num_train_samples)

@@ -67,7 +67,10 @@ def evaluate(
         end_idx = min(start_idx + batch_size, num_samples)
         batch = test_dataset[start_idx:end_idx]
 
-        x = jnp.asarray(batch["image"])
+        x = jnp.asarray(batch["image"], dtype=jnp.float32) 
+        if x.ndim == 3:
+            x = jnp.expand_dims(x, axis=-1)
+        
         y = jnp.asarray(batch["label"])
 
         correct, count = eval_step(model, x, y)

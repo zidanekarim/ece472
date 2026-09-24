@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission: hw03</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-alt: #f1f5f9;
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --code-bg: #ffffff;
+            --badge-bg: #e2e8f0;
+            --badge-text: #334155;
+            --radius: 8px;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0b0f19;
+                --surface: #131b2e;
+                --surface-alt: #1e293b;
+                --border: #334155;
+                --border-hover: #475569;
+                --text: #f8fafc;
+                --text-muted: #94a3b8;
+                --primary: #3b82f6;
+                --primary-hover: #60a5fa;
+                --primary-light: #1e3a8a;
+                --code-bg: #0f172a;
+                --badge-bg: #1e293b;
+                --badge-text: #cbd5e1;
+            }
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .header-info h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 0.35rem;
+        }
+
+        .author-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+        }
+
+        .author-tag {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .email-tag {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--surface-alt);
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            background: var(--surface-alt);
+            border-color: var(--border-hover);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Navigation / TOC */
+        .toc-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .toc-panel h2 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.65rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.8125rem;
+            transition: all 0.15s ease;
+        }
+
+        .toc-link:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .toc-link code {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+        }
+
+        .toc-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Section Headings */
+        .section-header {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+        }
+
+        /* File Cards */
+        .file-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: border-color 0.15s ease;
+        }
+
+        .file-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        summary, .file-summary {
+            list-style: none !important;
+        }
+
+        summary::-webkit-details-marker, .file-summary::-webkit-details-marker {
+            display: none !important;
+        }
+
+        summary::marker, .file-summary::marker {
+            display: none !important;
+            content: "" !important;
+        }
+
+        .file-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            list-style: none !important;
+        }
+
+        .file-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .chevron {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-right: 2px solid var(--text-muted);
+            border-bottom: 2px solid var(--text-muted);
+            transform: rotate(-45deg);
+            transition: transform 0.2s ease;
+            margin-right: 2px;
+            flex-shrink: 0;
+        }
+
+        details[open] > .file-summary .chevron {
+            transform: rotate(45deg);
+        }
+
+        .file-name {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .badges-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            white-space: nowrap;
+        }
+
+        .badge-plot {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-md {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .badge-md {
+                background: #78350f;
+                color: #fde68a;
+            }
+        }
+
+        /* Markdown rendering */
+        .markdown-body {
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 0.9375rem;
+            line-height: 1.65;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text);
+        }
+
+        .markdown-body h1 {
+            font-size: 1.35rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .markdown-body h2 {
+            font-size: 1.15rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .markdown-body h3 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .markdown-body h1:first-child,
+        .markdown-body h2:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-body hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 1.25rem 0;
+        }
+
+        .markdown-body ul,
+        .markdown-body ol {
+            padding-left: 1.75rem;
+        }
+
+        .markdown-body li + li {
+            margin-top: 0.25rem;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--primary);
+            padding: 0.5rem 1rem;
+            color: var(--text-muted);
+            background: var(--surface-alt);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+        }
+
+        .markdown-body th,
+        .markdown-body td {
+            border: 1px solid var(--border);
+            padding: 0.6rem 0.85rem;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background: var(--surface-alt);
+            font-weight: 600;
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background: var(--surface-alt);
+        }
+
+        .markdown-body :not(pre) > code {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.85em;
+            background: var(--surface-alt);
+            padding: 0.15em 0.35em;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .markdown-body pre code,
+        .highlight pre code,
+        pre code {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .markdown-body .highlight {
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+            background: #ffffff !important;
+        }
+
+        /* Code display */
+        .file-content {
+            background: #ffffff !important;
+            overflow-x: auto;
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.8125rem;
+            line-height: 1.55;
+        }
+
+        .highlight {
+            background: #ffffff !important;
+            padding: 0.75rem 0;
+        }
+
+        .highlight pre {
+            background: #ffffff !important;
+            margin: 0;
+            padding: 0 1rem;
+            white-space: pre;
+            word-wrap: normal;
+        }
+
+        .linenos {
+            color: var(--text-muted);
+            opacity: 0.6;
+            margin-right: 1.25rem;
+            user-select: none;
+            display: inline-block;
+            min-width: 2.25rem;
+            text-align: right;
+        }
+
+        /* Artifacts & SVGs */
+        .artifact-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .artifact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .artifact-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .artifact-name {
+            font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.875rem;
+        }
+
+        .svg-container {
+            padding: 1.5rem;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Pygments Syntax Theme Integration */
+        pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+
+        /* Ensure code backgrounds remain pure white even after Pygments theme rules */
+        .highlight, .highlight pre, .file-content, .markdown-body .highlight, code, pre {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Print Media Stylesheet */
+        @media print {
+            @page {
+                size: letter;
+                margin: 0.9in 0.5in 0.65in 0.5in;
+                @top-left {
+                    content: "ECE472 \2022  hw03";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 8pt;
+                    font-weight: 600;
+                    line-height: 1.6;
+                    color: #475569;
+                    vertical-align: bottom;
+                }
+                @top-right {
+                    content: "Zidane Karim <zidane.karim@cooper.edu>";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 8pt;
+                    font-weight: 600;
+                    line-height: 1.6;
+                    color: #475569;
+                    vertical-align: bottom;
+                }
+                @bottom-left {
+                    content: "Generated: 2026-09-23 20:33:05";
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 7.5pt;
+                    line-height: 1.5;
+                    color: #94a3b8;
+                }
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    font-size: 7.5pt;
+                    line-height: 1.5;
+                    color: #94a3b8;
+                }
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                font-size: 9pt !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .no-print, .toolbar, .toc-panel, .btn {
+                display: none !important;
+            }
+
+            .header {
+                background: #ffffff !important;
+                border: 1px solid #999999 !important;
+                box-shadow: none !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            .section-header {
+                page-break-after: avoid;
+                break-after: avoid;
+                font-size: 11pt !important;
+                margin-top: 1.5rem !important;
+            }
+
+            details.file-card {
+                display: block !important;
+                background: #ffffff !important;
+                border: 1px solid #cccccc !important;
+                box-shadow: none !important;
+                margin-bottom: 1rem !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            details.file-card summary, .file-summary {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 1px solid #cccccc !important;
+                cursor: default !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                list-style: none !important;
+            }
+
+            .file-title, .file-name, .badges-group, .badge {
+                white-space: nowrap !important;
+            }
+
+            .badges-group {
+                flex-shrink: 0 !important;
+            }
+            details.file-card .chevron, .chevron {
+                display: none !important;
+            }
+
+            details.file-card .file-content {
+                display: block !important;
+                background: #ffffff !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .file-content, .highlight, .highlight pre, .markdown-body, .markdown-body .highlight, code, pre {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+            }
+
+            .highlight {
+                padding: 0.5rem 0 !important;
+            }
+
+            .highlight pre {
+                white-space: pre-wrap !important;
+                word-break: break-all !important;
+                font-size: 8pt !important;
+                line-height: 1.4 !important;
+            }
+
+            .linenos {
+                color: #888888 !important;
+                opacity: 1 !important;
+            }
+
+            .markdown-body {
+                padding: 0.75rem 1rem !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-size: 8.5pt !important;
+            }
+
+            .markdown-body table th {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+
+            .markdown-body tr:nth-child(even) {
+                background: #ffffff !important;
+            }
+
+            .markdown-body blockquote {
+                background: #ffffff !important;
+                border-left-color: #666666 !important;
+                color: #333333 !important;
+            }
+            .markdown-body :not(pre) > code {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+
+            .markdown-body pre code,
+            .highlight pre code,
+            pre code {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+
+            .markdown-body .highlight {
+                border: 1px solid #cccccc !important;
+                border-radius: 4px !important;
+                margin: 0.75rem 0 !important;
+                background: #ffffff !important;
+            }
+            .artifact-card {
+                display: block !important;
+                background: #ffffff !important;
+                border: 1px solid #cccccc !important;
+                box-shadow: none !important;
+                margin-bottom: 1.5rem !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .artifact-header {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-bottom: 1px solid #cccccc !important;
+            }
+
+            .svg-container {
+                padding: 1rem !important;
+                background: #ffffff !important;
+            }
+
+            .svg-container svg {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-info">
+                <h1>Submission: hw03</h1>
+                <div class="author-meta">
+                    <span class="author-tag">Zidane Karim</span>
+                    <span class="email-tag">&lt;zidane.karim@cooper.edu&gt;</span>
+                </div>
+                <div class="meta">
+                    <span class="meta-tag">10 Source Files</span>
+                    <span class="meta-tag">0 Plots</span>
+                    <span class="meta-tag">536 Lines</span>
+                    <span>Generated: 2026-09-23 20:33:05</span>
+                </div>
+            </div>
+            <div class="toolbar no-print">
+                <button type="button" class="btn" onclick="toggleAllCards(true)" title="Expand all file cards">
+                    Expand All
+                </button>
+                <button type="button" class="btn" onclick="toggleAllCards(false)" title="Collapse all file cards">
+                    Collapse All
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()" title="Print to PDF or paper">
+                    Print / Save PDF
+                </button>
+            </div>
+        </header>
+
+        <nav class="toc-panel no-print">
+            <h2>Source &amp; Configuration Index</h2>
+            <div class="toc-grid">
+                <a href="#file-pyproject_toml" class="toc-link">
+                    <code>pyproject.toml</code>
+                    <span class="toc-badge">33 lines</span>
+                </a>
+                <a href="#file-README_md" class="toc-link">
+                    <code>README.md</code>
+                    <span class="toc-badge">Markdown</span>
+                </a>
+                <a href="#file-src_hw03_config_toml" class="toc-link">
+                    <code>src/hw03/config.toml</code>
+                    <span class="toc-badge">17 lines</span>
+                </a>
+                <a href="#file-src_hw03___init___py" class="toc-link">
+                    <code>src/hw03/__init__.py</code>
+                    <span class="toc-badge">56 lines</span>
+                </a>
+                <a href="#file-src_hw03_config_py" class="toc-link">
+                    <code>src/hw03/config.py</code>
+                    <span class="toc-badge">98 lines</span>
+                </a>
+                <a href="#file-src_hw03_data_py" class="toc-link">
+                    <code>src/hw03/data.py</code>
+                    <span class="toc-badge">59 lines</span>
+                </a>
+                <a href="#file-src_hw03_model_py" class="toc-link">
+                    <code>src/hw03/model.py</code>
+                    <span class="toc-badge">111 lines</span>
+                </a>
+                <a href="#file-src_hw03_training_py" class="toc-link">
+                    <code>src/hw03/training.py</code>
+                    <span class="toc-badge">80 lines</span>
+                </a>
+                <a href="#file-src_hw03_evaluate_py" class="toc-link">
+                    <code>src/hw03/evaluate.py</code>
+                    <span class="toc-badge">14 lines</span>
+                </a>
+                <a href="#file-src_hw03_logging_py" class="toc-link">
+                    <code>src/hw03/logging.py</code>
+                    <span class="toc-badge">63 lines</span>
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <h2 class="section-header">Source Code &amp; Configuration</h2>
+            <details class="file-card" id="file-pyproject_toml" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">pyproject.toml</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">33 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># pyproject.toml.jinja</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">[project]</span>
+<span class="linenos"> 4</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw03"</span>
+<span class="linenos"> 5</span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<span class="linenos"> 6</span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Convolutional Neural Network Classifier"</span>
+<span class="linenos"> 7</span><span class="n">readme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"README.md"</span>
+<span class="linenos"> 8</span><span class="n">authors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"Zidane Karim"</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"zidane.karim@cooper.edu"</span><span class="w"> </span><span class="p">}</span>
+<span class="linenos">10</span><span class="p">]</span>
+<span class="linenos">11</span><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.13"</span>
+<span class="linenos">12</span><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="linenos">13</span><span class="w">    </span><span class="s2">"structlog"</span><span class="p">,</span>
+<span class="linenos">14</span><span class="w">    </span><span class="s2">"rich"</span><span class="p">,</span>
+<span class="linenos">15</span><span class="w">    </span><span class="s2">"numpy"</span><span class="p">,</span>
+<span class="linenos">16</span><span class="w">    </span><span class="s2">"pydantic"</span><span class="p">,</span>
+<span class="linenos">17</span><span class="w">    </span><span class="s2">"pydantic-settings&gt;=2.10.1"</span><span class="p">,</span>
+<span class="linenos">18</span><span class="w">    </span><span class="s2">"matplotlib&gt;=3.10.5"</span><span class="p">,</span>
+<span class="linenos">19</span><span class="w">    </span><span class="s2">"tqdm&gt;=4.67.1"</span><span class="p">,</span>
+<span class="linenos">20</span><span class="w">    </span><span class="s2">"jax[cpu,cuda13]==0.11.1"</span><span class="p">,</span>
+<span class="linenos">21</span><span class="w">    </span><span class="s2">"flax&gt;=0.11.2"</span><span class="p">,</span>
+<span class="linenos">22</span><span class="w">    </span><span class="s2">"optax&gt;=0.2.4"</span><span class="p">,</span>
+<span class="linenos">23</span><span class="w">    </span><span class="s2">"scikit-learn"</span><span class="p">,</span>
+<span class="linenos">24</span><span class="w">    </span><span class="s2">"jaxlib[cuda13]==0.11.1"</span><span class="p">,</span>
+<span class="linenos">25</span><span class="w">    </span><span class="s2">"datasets&gt;=5.0.1"</span><span class="p">,</span>
+<span class="linenos">26</span><span class="p">]</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span><span class="k">[project.scripts]</span>
+<span class="linenos">29</span><span class="n">hw03</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw03:main"</span>
+<span class="linenos">30</span><span class="n">hw03-evaluate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hw03.evaluate:main"</span>
+<span class="linenos">31</span><span class="k">[build-system]</span>
+<span class="linenos">32</span><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"uv_build&gt;=0.8.3,&lt;0.9.0"</span><span class="p">]</span>
+<span class="linenos">33</span><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"uv_build"</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-README_md" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">README.md</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge badge-md">Markdown</span>
+                        <span class="badge">5 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content markdown-body">
+                    <h1>hw03</h1>
+<p>Convolutional Neural Network Classifier</p>
+<p>Test Accuracy: 96.74%</p>
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_config_toml" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/config.toml</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">17 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="linenos"> 2</span><span class="n">random_seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xc61dd8fc</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="k">[data]</span>
+<span class="linenos"> 5</span><span class="n">num_features</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="linenos"> 6</span><span class="n">num_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span>
+<span class="linenos"> 7</span><span class="n">sigma_noise</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="k">[training]</span>
+<span class="linenos">10</span><span class="n">batch_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span>
+<span class="linenos">11</span><span class="n">num_iters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4500</span><span class="w"> </span><span class="c1"># less than 5 epochs</span>
+<span class="linenos">12</span><span class="n">learning_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.001</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">[plotting]</span>
+<span class="linenos">15</span><span class="n">output_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"artifacts"</span>
+<span class="linenos">16</span><span class="n">figsize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+<span class="linenos">17</span><span class="n">dpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03___init___py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/__init__.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">56 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">optax</span>
+<span class="linenos"> 4</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_settings</span>
+<span class="linenos"> 8</span><span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logging</span>
+<span class="linenos">10</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearModel</span><span class="p">,</span> <span class="n">NNXLinearModel</span><span class="p">,</span> <span class="n">Classifier</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="c1"># from .plotting import compare_linear_models, plot_fit</span>
+<span class="linenos">13</span><span class="kn">from</span><span class="w"> </span><span class="nn">.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">train</span><span class="p">,</span> <span class="n">evaluate</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">17</span><span class="w">    </span><span class="sd">"""CLI entry point."""</span>
+<span class="linenos">18</span>    <span class="n">settings</span> <span class="o">=</span> <span class="n">load_settings</span><span class="p">()</span>
+<span class="linenos">19</span>    <span class="n">configure_logging</span><span class="p">()</span>
+<span class="linenos">20</span>    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">21</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Settings loaded"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="c1"># JAX PRNG</span>
+<span class="linenos">24</span>    <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">random_seed</span><span class="p">)</span>
+<span class="linenos">25</span>    <span class="n">data_key</span><span class="p">,</span> <span class="n">model_key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="linenos">26</span>    <span class="n">np_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key_data</span><span class="p">(</span><span class="n">data_key</span><span class="p">)))</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>    <span class="c1"># log.debug("Data generating model", model=data_generating_model)</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">Classifier</span><span class="p">(</span>
+<span class="linenos">33</span>        <span class="n">input_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># mnist specs</span>
+<span class="linenos">34</span>        <span class="n">layer_channels</span><span class="o">=</span><span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+<span class="linenos">35</span>        <span class="n">kernel_sizes</span><span class="o">=</span><span class="p">[(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
+<span class="linenos">36</span>        <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  <span class="c1"># originally [1,1], which produced 91.2%</span>
+<span class="linenos">37</span>        <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># digits 0-9</span>
+<span class="linenos">38</span>        <span class="n">rngs</span><span class="o">=</span><span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">model_key</span><span class="p">),</span>
+<span class="linenos">39</span>    <span class="p">)</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">(</span>
+<span class="linenos">42</span>        <span class="n">model</span><span class="p">,</span> <span class="n">optax</span><span class="o">.</span><span class="n">adam</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">),</span> <span class="n">wrt</span><span class="o">=</span><span class="n">nnx</span><span class="o">.</span><span class="n">Param</span>
+<span class="linenos">43</span>    <span class="p">)</span>
+<span class="linenos">44</span>
+<span class="linenos">45</span>    <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">training</span><span class="p">,</span> <span class="n">np_rng</span><span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>    <span class="c1"># log.debug("Trained model", model=model.model)</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span>    <span class="c1"># compare_linear_models(data.model, model.model)</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>    <span class="c1"># if settings.data.num_features == 1:</span>
+<span class="linenos">52</span>    <span class="c1">#     plot_fit(model, data, settings.plotting)</span>
+<span class="linenos">53</span>    <span class="c1"># else:</span>
+<span class="linenos">54</span>    <span class="c1">#     log.info("Skipping plotting for multi-feature models.")</span>
+<span class="linenos">55</span>    <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">validation_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+<span class="linenos">56</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Test Accuracy: </span><span class="si">{</span><span class="n">test_accuracy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">%</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_config_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/config.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">98 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">files</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="linenos"> 6</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic_settings</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="linenos"> 7</span>    <span class="n">BaseSettings</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="n">SettingsConfigDict</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="n">TomlConfigSettingsSource</span><span class="p">,</span>
+<span class="linenos">11</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">def</span><span class="w"> </span><span class="nf">_find_config_toml</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="linenos">15</span><span class="w">    </span><span class="sd">"""Resolve config.toml location via importlib.resources or relative path fallback."""</span>
+<span class="linenos">16</span>    <span class="k">if</span> <span class="n">__package__</span><span class="p">:</span>
+<span class="linenos">17</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">18</span>            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">files</span><span class="p">(</span><span class="n">__package__</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"config.toml"</span><span class="p">)))</span>
+<span class="linenos">19</span>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<span class="linenos">20</span>            <span class="k">pass</span>
+<span class="linenos">21</span>    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"config.toml"</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="k">class</span><span class="w"> </span><span class="nc">DataSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">25</span><span class="w">    </span><span class="sd">"""Settings for data generation."""</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">28</span>        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of feature dimensions"</span>
+<span class="linenos">29</span>    <span class="p">)</span>
+<span class="linenos">30</span>    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">31</span>        <span class="n">default</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of synthetic data points"</span>
+<span class="linenos">32</span>    <span class="p">)</span>
+<span class="linenos">33</span>    <span class="n">sigma_noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">34</span>        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Standard deviation of Gaussian noise"</span>
+<span class="linenos">35</span>    <span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span><span class="k">class</span><span class="w"> </span><span class="nc">TrainingSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">39</span><span class="w">    </span><span class="sd">"""Settings for model training."""</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Mini-batch size for SGD"</span><span class="p">)</span>
+<span class="linenos">42</span>    <span class="n">num_iters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">43</span>        <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of optimization iterations"</span>
+<span class="linenos">44</span>    <span class="p">)</span>
+<span class="linenos">45</span>    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<span class="linenos">46</span>        <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Learning rate for Adam optimizer"</span>
+<span class="linenos">47</span>    <span class="p">)</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span>
+<span class="linenos">50</span><span class="k">class</span><span class="w"> </span><span class="nc">PlottingSettings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">51</span><span class="w">    </span><span class="sd">"""Settings for plotting."""</span>
+<span class="linenos">52</span>
+<span class="linenos">53</span>    <span class="n">figsize</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="linenos">54</span>    <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Dots per inch for saved figures"</span><span class="p">)</span>
+<span class="linenos">55</span>    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"artifacts"</span><span class="p">)</span>
+<span class="linenos">56</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span><span class="k">class</span><span class="w"> </span><span class="nc">AppSettings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+<span class="linenos">59</span><span class="w">    </span><span class="sd">"""Main application settings."""</span>
+<span class="linenos">60</span>
+<span class="linenos">61</span>    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">62</span>    <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">31415</span>
+<span class="linenos">63</span>    <span class="n">data</span><span class="p">:</span> <span class="n">DataSettings</span> <span class="o">=</span> <span class="n">DataSettings</span><span class="p">()</span>
+<span class="linenos">64</span>    <span class="n">training</span><span class="p">:</span> <span class="n">TrainingSettings</span> <span class="o">=</span> <span class="n">TrainingSettings</span><span class="p">()</span>
+<span class="linenos">65</span>    <span class="n">plotting</span><span class="p">:</span> <span class="n">PlottingSettings</span> <span class="o">=</span> <span class="n">PlottingSettings</span><span class="p">()</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span>    <span class="n">model_config</span> <span class="o">=</span> <span class="n">SettingsConfigDict</span><span class="p">(</span>
+<span class="linenos">68</span>        <span class="n">toml_file</span><span class="o">=</span><span class="n">_find_config_toml</span><span class="p">(),</span>
+<span class="linenos">69</span>        <span class="n">env_nested_delimiter</span><span class="o">=</span><span class="s2">"__"</span><span class="p">,</span>
+<span class="linenos">70</span>        <span class="n">extra</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span>
+<span class="linenos">71</span>    <span class="p">)</span>
+<span class="linenos">72</span>
+<span class="linenos">73</span>    <span class="nd">@classmethod</span>
+<span class="linenos">74</span>    <span class="k">def</span><span class="w"> </span><span class="nf">settings_customise_sources</span><span class="p">(</span>
+<span class="linenos">75</span>        <span class="bp">cls</span><span class="p">,</span>
+<span class="linenos">76</span>        <span class="n">settings_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseSettings</span><span class="p">],</span>
+<span class="linenos">77</span>        <span class="n">init_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">78</span>        <span class="n">env_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">79</span>        <span class="n">dotenv_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">80</span>        <span class="n">file_secret_settings</span><span class="p">:</span> <span class="n">PydanticBaseSettingsSource</span><span class="p">,</span>
+<span class="linenos">81</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PydanticBaseSettingsSource</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="linenos">82</span><span class="w">        </span><span class="sd">"""</span>
+<span class="linenos">83</span><span class="sd">        Set the priority of settings sources.</span>
+<span class="linenos">84</span>
+<span class="linenos">85</span><span class="sd">        We use a TOML file for configuration.</span>
+<span class="linenos">86</span><span class="sd">        """</span>
+<span class="linenos">87</span>        <span class="k">return</span> <span class="p">(</span>
+<span class="linenos">88</span>            <span class="n">init_settings</span><span class="p">,</span>
+<span class="linenos">89</span>            <span class="n">TomlConfigSettingsSource</span><span class="p">(</span><span class="n">settings_cls</span><span class="p">),</span>
+<span class="linenos">90</span>            <span class="n">env_settings</span><span class="p">,</span>
+<span class="linenos">91</span>            <span class="n">dotenv_settings</span><span class="p">,</span>
+<span class="linenos">92</span>            <span class="n">file_secret_settings</span><span class="p">,</span>
+<span class="linenos">93</span>        <span class="p">)</span>
+<span class="linenos">94</span>
+<span class="linenos">95</span>
+<span class="linenos">96</span><span class="k">def</span><span class="w"> </span><span class="nf">load_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AppSettings</span><span class="p">:</span>
+<span class="linenos">97</span><span class="w">    </span><span class="sd">"""Load application settings."""</span>
+<span class="linenos">98</span>    <span class="k">return</span> <span class="n">AppSettings</span><span class="p">()</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_data_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/data.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">59 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitVar</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
+<span class="linenos"> 7</span>    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"image"</span><span class="p">]]</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>    <span class="n">images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="n">images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
+<span class="linenos">11</span>        <span class="n">images</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span>
+<span class="linenos">12</span>    <span class="p">)</span>  <span class="c1"># add channel dimension for grayscale images, since our flax conv wants format: batch, hieght, width, channels</span>
+<span class="linenos">13</span>    <span class="n">images</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">14</span>        <span class="n">images</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="linenos">15</span>    <span class="p">)</span>  <span class="c1"># we normalize bc the pixel values are between 0 and 255, and we want them to be between 0 and 1. this is usual for image data when taking from huggingface or similar</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos">18</span>    <span class="k">return</span> <span class="p">{</span><span class="s2">"image"</span><span class="p">:</span> <span class="n">images</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">:</span> <span class="n">labels</span><span class="p">}</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="k">def</span><span class="w"> </span><span class="nf">load_mnist_dataset</span><span class="p">():</span>
+<span class="linenos">22</span>    <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">"ylecun/mnist"</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">train_data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">preprocess</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">24</span>    <span class="n">validation_data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">"test"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">preprocess</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>    <span class="k">return</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">validation_data</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="nd">@dataclass</span>
+<span class="linenos">30</span><span class="k">class</span><span class="w"> </span><span class="nc">Data</span><span class="p">:</span>
+<span class="linenos">31</span><span class="w">    </span><span class="sd">"""Handles generation of synthetic data for linear regression."""</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span>    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">36</span>        <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span> <span class="o">=</span> <span class="n">load_mnist_dataset</span><span class="p">()</span>
+<span class="linenos">37</span>        <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span>
+<span class="linenos">38</span>            <span class="nb">type</span><span class="o">=</span><span class="s2">"numpy"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"image"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">]</span>
+<span class="linenos">39</span>        <span class="p">)</span>  <span class="c1"># numpy technique to speed computation, nothing crazy</span>
+<span class="linenos">40</span>        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span>
+<span class="linenos">41</span>            <span class="nb">type</span><span class="o">=</span><span class="s2">"numpy"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"image"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">]</span>
+<span class="linenos">42</span>        <span class="p">)</span>  <span class="c1"># numpy technique to speed computation, nothing crazy</span>
+<span class="linenos">43</span>
+<span class="linenos">44</span>        <span class="c1"># self.train_images = self.train_data["image"]</span>
+<span class="linenos">45</span>        <span class="c1"># self.train_labels = self.train_data["label"]</span>
+<span class="linenos">46</span>        <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">[:]</span>
+<span class="linenos">47</span>        <span class="bp">self</span><span class="o">.</span><span class="n">train_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">"image"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">48</span>        <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="linenos">49</span>
+<span class="linenos">50</span>        <span class="bp">self</span><span class="o">.</span><span class="n">num_train_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">)</span>
+<span class="linenos">51</span>        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_train_samples</span><span class="p">)</span>
+<span class="linenos">52</span>
+<span class="linenos">53</span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_batch</span><span class="p">(</span>
+<span class="linenos">54</span>        <span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="linenos">55</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="linenos">56</span><span class="w">        </span><span class="sd">"""Select random subset of examples for training batch."""</span>
+<span class="linenos">57</span>        <span class="n">choices</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">58</span>        <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">[</span><span class="n">choices</span><span class="p">]</span>
+<span class="linenos">59</span>        <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"image"</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_model_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/model.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">111 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="linenos">  2</span>
+<span class="linenos">  3</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos">  4</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  6</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos">  7</span>
+<span class="linenos">  8</span>
+<span class="linenos">  9</span><span class="nd">@dataclass</span>
+<span class="linenos"> 10</span><span class="k">class</span><span class="w"> </span><span class="nc">LinearModel</span><span class="p">:</span>
+<span class="linenos"> 11</span><span class="w">    </span><span class="sd">"""Represents a simple linear model."""</span>
+<span class="linenos"> 12</span>
+<span class="linenos"> 13</span>    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="linenos"> 14</span>    <span class="n">bias</span><span class="p">:</span> <span class="nb">float</span>
+<span class="linenos"> 15</span>
+<span class="linenos"> 16</span>
+<span class="linenos"> 17</span><span class="k">class</span><span class="w"> </span><span class="nc">Conv2d</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos"> 18</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="linenos"> 19</span>        <span class="bp">self</span><span class="p">,</span>
+<span class="linenos"> 20</span>        <span class="n">in_features</span><span class="p">,</span>
+<span class="linenos"> 21</span>        <span class="n">out_features</span><span class="p">,</span>
+<span class="linenos"> 22</span>        <span class="n">kernel_size</span><span class="p">,</span>
+<span class="linenos"> 23</span>        <span class="n">strides</span><span class="p">,</span>
+<span class="linenos"> 24</span>        <span class="n">padding</span><span class="p">,</span>
+<span class="linenos"> 25</span>        <span class="n">use_bias</span><span class="p">,</span>
+<span class="linenos"> 26</span>        <span class="o">*</span><span class="p">,</span>
+<span class="linenos"> 27</span>        <span class="n">rngs</span><span class="p">,</span>
+<span class="linenos"> 28</span>    <span class="p">):</span>
+<span class="linenos"> 29</span>        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Conv</span><span class="p">(</span>
+<span class="linenos"> 30</span>            <span class="n">in_features</span><span class="o">=</span><span class="n">in_features</span><span class="p">,</span>
+<span class="linenos"> 31</span>            <span class="n">out_features</span><span class="o">=</span><span class="n">out_features</span><span class="p">,</span>
+<span class="linenos"> 32</span>            <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+<span class="linenos"> 33</span>            <span class="n">strides</span><span class="o">=</span><span class="n">strides</span><span class="p">,</span>
+<span class="linenos"> 34</span>            <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+<span class="linenos"> 35</span>            <span class="n">use_bias</span><span class="o">=</span><span class="n">use_bias</span><span class="p">,</span>
+<span class="linenos"> 36</span>            <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span>
+<span class="linenos"> 37</span>        <span class="p">)</span>
+<span class="linenos"> 38</span>
+<span class="linenos"> 39</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="linenos"> 40</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos"> 41</span>
+<span class="linenos"> 42</span>
+<span class="linenos"> 43</span><span class="k">class</span><span class="w"> </span><span class="nc">Classifier</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos"> 44</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="linenos"> 45</span>        <span class="bp">self</span><span class="p">,</span>
+<span class="linenos"> 46</span>        <span class="n">input_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="linenos"> 47</span>        <span class="n">layer_channels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<span class="linenos"> 48</span>        <span class="n">kernel_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+<span class="linenos"> 49</span>        <span class="n">strides</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<span class="linenos"> 50</span>        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="linenos"> 51</span>        <span class="o">*</span><span class="p">,</span>
+<span class="linenos"> 52</span>        <span class="n">rngs</span><span class="p">,</span>
+<span class="linenos"> 53</span>    <span class="p">):</span>
+<span class="linenos"> 54</span>        <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span>
+<span class="linenos"> 55</span>        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+<span class="linenos"> 56</span>        <span class="bp">self</span><span class="o">.</span><span class="n">linear_layer</span> <span class="o">=</span> <span class="n">NNXLinearModel</span><span class="p">(</span>
+<span class="linenos"> 57</span>            <span class="n">rngs</span><span class="p">,</span> <span class="n">in_features</span><span class="o">=</span><span class="n">layer_channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">out_features</span><span class="o">=</span><span class="n">num_classes</span>
+<span class="linenos"> 58</span>        <span class="p">)</span>
+<span class="linenos"> 59</span>
+<span class="linenos"> 60</span>        <span class="k">for</span> <span class="n">output_channel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+<span class="linenos"> 61</span>            <span class="n">layer_channels</span><span class="p">,</span> <span class="n">kernel_sizes</span><span class="p">,</span> <span class="n">strides</span>
+<span class="linenos"> 62</span>        <span class="p">):</span>
+<span class="linenos"> 63</span>            <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="linenos"> 64</span>                <span class="n">Conv2d</span><span class="p">(</span>
+<span class="linenos"> 65</span>                    <span class="n">in_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span><span class="p">,</span>
+<span class="linenos"> 66</span>                    <span class="n">out_features</span><span class="o">=</span><span class="n">output_channel</span><span class="p">,</span>
+<span class="linenos"> 67</span>                    <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+<span class="linenos"> 68</span>                    <span class="n">strides</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span>
+<span class="linenos"> 69</span>                    <span class="n">padding</span><span class="o">=</span><span class="s2">"SAME"</span><span class="p">,</span>
+<span class="linenos"> 70</span>                    <span class="n">use_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 71</span>                    <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span>
+<span class="linenos"> 72</span>                <span class="p">)</span>  <span class="c1"># padding="SAME" to keep the output size the same as input size</span>
+<span class="linenos"> 73</span>            <span class="p">)</span>
+<span class="linenos"> 74</span>            <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">output_channel</span>  <span class="c1"># similar to resnet where we set the input channels to the output channels of the previous layer</span>
+<span class="linenos"> 75</span>
+<span class="linenos"> 76</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="linenos"> 77</span>        <span class="k">for</span> <span class="n">conv_layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_layers</span><span class="p">:</span>
+<span class="linenos"> 78</span>            <span class="n">x</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span>
+<span class="linenos"> 79</span>                <span class="n">conv_layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos"> 80</span>            <span class="p">)</span>  <span class="c1"># convultional layers commonly use ReLu as the activation function</span>
+<span class="linenos"> 81</span>        <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+<span class="linenos"> 82</span>            <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos"> 83</span>        <span class="p">)</span>  <span class="c1"># global average pooling so model is invariant to input resolution</span>
+<span class="linenos"> 84</span>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos"> 85</span>        <span class="k">return</span> <span class="n">x</span>
+<span class="linenos"> 86</span>
+<span class="linenos"> 87</span>
+<span class="linenos"> 88</span><span class="k">class</span><span class="w"> </span><span class="nc">NNXLinearModel</span><span class="p">(</span><span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos"> 89</span><span class="w">    </span><span class="sd">"""A Flax NNX module for a linear regression model, with multi-dimension support added to solve MLP"""</span>
+<span class="linenos"> 90</span>
+<span class="linenos"> 91</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rngs</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Rngs</span><span class="p">,</span> <span class="n">in_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="linenos"> 92</span>        <span class="n">key</span> <span class="o">=</span> <span class="n">rngs</span><span class="o">.</span><span class="n">params</span><span class="p">()</span>
+<span class="linenos"> 93</span>        <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span> <span class="o">=</span> <span class="n">in_features</span>  <span class="c1"># bc of MLP</span>
+<span class="linenos"> 94</span>        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">out_features</span>
+<span class="linenos"> 95</span>        <span class="n">std</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+<span class="linenos"> 96</span>            <span class="mf">2.0</span> <span class="o">/</span> <span class="n">in_features</span>
+<span class="linenos"> 97</span>        <span class="p">)</span>  <span class="c1"># prevents vanishing gradients, switched to He initialization</span>
+<span class="linenos"> 98</span>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">out_features</span><span class="p">))</span> <span class="o">*</span> <span class="n">std</span><span class="p">)</span>
+<span class="linenos"> 99</span>        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_features</span><span class="p">)))</span>  <span class="c1"># broadcasts for output</span>
+<span class="linenos">100</span>
+<span class="linenos">101</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="linenos">102</span><span class="w">        </span><span class="sd">"""Predicts the output for a given input."""</span>
+<span class="linenos">103</span>        <span class="k">return</span> <span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># squeeze gone to maintain hidden layers</span>
+<span class="linenos">104</span>
+<span class="linenos">105</span>    <span class="c1"># @property</span>
+<span class="linenos">106</span>    <span class="c1"># def model(self) -&gt; LinearModel:</span>
+<span class="linenos">107</span>    <span class="c1">#     """Returns the underlying simple linear model."""</span>
+<span class="linenos">108</span>    <span class="c1">#     return LinearModel(</span>
+<span class="linenos">109</span>    <span class="c1">#         weights=np.array(self.w.value).reshape([self.num_features]),</span>
+<span class="linenos">110</span>    <span class="c1">#         bias=float(np.array(self.b.value).squeeze()),</span>
+<span class="linenos">111</span>    <span class="c1">#     )</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_training_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/training.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">80 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">flax</span><span class="w"> </span><span class="kn">import</span> <span class="n">nnx</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">trange</span>
+<span class="linenos"> 6</span><span class="kn">import</span><span class="w"> </span><span class="nn">optax</span>
+<span class="linenos"> 7</span><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainingSettings</span>
+<span class="linenos"> 8</span><span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+<span class="linenos"> 9</span><span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">NNXLinearModel</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="nd">@nnx</span><span class="o">.</span><span class="n">jit</span>
+<span class="linenos">15</span><span class="k">def</span><span class="w"> </span><span class="nf">train_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="linenos">16</span><span class="w">    </span><span class="sd">"""Performs a single training step."""</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>    <span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="linenos">19</span>        <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos">20</span>        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">optax</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_integer_labels</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">nnx</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">)(</span><span class="n">model</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">optimizer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="linenos">24</span>        <span class="n">model</span><span class="p">,</span> <span class="n">grads</span>
+<span class="linenos">25</span>    <span class="p">)</span>  <span class="c1"># In-place update of model parameters, same as second assignment</span>
+<span class="linenos">26</span>    <span class="k">return</span> <span class="n">loss</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span>
+<span class="linenos">30</span>    <span class="n">model</span><span class="p">,</span>
+<span class="linenos">31</span>    <span class="n">optimizer</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">,</span>
+<span class="linenos">32</span>    <span class="n">data</span><span class="p">:</span> <span class="n">Data</span><span class="p">,</span>
+<span class="linenos">33</span>    <span class="n">settings</span><span class="p">:</span> <span class="n">TrainingSettings</span><span class="p">,</span>
+<span class="linenos">34</span>    <span class="n">np_rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+<span class="linenos">35</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">36</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting training"</span><span class="p">,</span> <span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<span class="linenos">37</span>    <span class="n">bar</span> <span class="o">=</span> <span class="n">trange</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">num_iters</span><span class="p">)</span>
+<span class="linenos">38</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">:</span>
+<span class="linenos">39</span>        <span class="n">x_np</span><span class="p">,</span> <span class="n">y_np</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">np_rng</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="linenos">40</span>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x_np</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">)</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>        <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="linenos">43</span>        <span class="n">bar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loss @ </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> =&gt; </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="linenos">44</span>        <span class="n">bar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="linenos">45</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Training finished"</span><span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span><span class="sd">"""Evaluation logic to get test accuracy"""</span>
+<span class="linenos">49</span><span class="c1"># just copy the training logic but against validation</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>
+<span class="linenos">52</span><span class="nd">@nnx</span><span class="o">.</span><span class="n">jit</span>
+<span class="linenos">53</span><span class="k">def</span><span class="w"> </span><span class="nf">eval_step</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="linenos">54</span>    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="linenos">55</span>    <span class="n">predicted_classes</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">56</span>    <span class="n">correct_count</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">predicted_classes</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>
+<span class="linenos">57</span>    <span class="k">return</span> <span class="n">correct_count</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">58</span>
+<span class="linenos">59</span>
+<span class="linenos">60</span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">nnx</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos">61</span>    <span class="n">total_correct</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">62</span>    <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">63</span>
+<span class="linenos">64</span>    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">)</span>
+<span class="linenos">65</span>    <span class="k">for</span> <span class="n">start_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+<span class="linenos">66</span>        <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">)</span>
+<span class="linenos">67</span>        <span class="n">batch</span> <span class="o">=</span> <span class="n">test_dataset</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">]</span>
+<span class="linenos">68</span>
+<span class="linenos">69</span>        <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">"image"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">70</span>        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+<span class="linenos">71</span>            <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">72</span>
+<span class="linenos">73</span>        <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span>
+<span class="linenos">74</span>
+<span class="linenos">75</span>        <span class="n">correct</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">eval_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="linenos">76</span>        <span class="n">total_correct</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">correct</span><span class="p">)</span>
+<span class="linenos">77</span>        <span class="n">total_samples</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+<span class="linenos">78</span>
+<span class="linenos">79</span>    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">total_correct</span> <span class="o">/</span> <span class="n">total_samples</span>
+<span class="linenos">80</span>    <span class="k">return</span> <span class="n">accuracy</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_evaluate_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/evaluate.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">14 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">"""Evaluation entry point for hw03."""</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logging</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="sd">"""CLI entry point for homework evaluation."""</span>
+<span class="linenos">10</span>    <span class="n">configure_logging</span><span class="p">()</span>
+<span class="linenos">11</span>    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+<span class="linenos">12</span>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<span class="linenos">13</span>        <span class="s2">"Evaluation not yet implemented for hw03. Implement evaluation logic in src/hw03/evaluate.py"</span>
+<span class="linenos">14</span>    <span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+            <details class="file-card" id="file-src_hw03_logging_py" open>
+                <summary class="file-summary">
+                    <span class="file-title">
+                        <span class="chevron"></span>
+                        <span class="file-name">src/hw03/logging.py</span>
+                    </span>
+                    <span class="badges-group">
+                        <span class="badge">63 lines</span>
+                    </span>
+                </summary>
+                <div class="file-content">
+                    <div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="linenos"> 7</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 8</span><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="k">class</span><span class="w"> </span><span class="nc">FormattedFloat</span><span class="p">(</span><span class="nb">float</span><span class="p">):</span>
+<span class="linenos">12</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">13</span>        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">"</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="k">def</span><span class="w"> </span><span class="nf">custom_serializer_processor</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">event_dict</span><span class="p">):</span>
+<span class="linenos">17</span>    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="linenos">18</span>        <span class="c1"># Handle JAX arrays in addition to TF tensors</span>
+<span class="linenos">19</span>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">):</span>  <span class="c1"># Covers TF tensors</span>
+<span class="linenos">20</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="linenos">21</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+<span class="linenos">22</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">23</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+<span class="linenos">24</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="linenos">25</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+<span class="linenos">26</span>            <span class="n">value</span> <span class="o">=</span> <span class="n">FormattedFloat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">27</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+<span class="linenos">28</span>            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">29</span>        <span class="n">event_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="linenos">30</span>    <span class="k">return</span> <span class="n">event_dict</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span><span class="k">def</span><span class="w"> </span><span class="nf">configure_logging</span><span class="p">():</span>
+<span class="linenos">34</span><span class="w">    </span><span class="sd">"""Configure logging for the application."""</span>
+<span class="linenos">35</span>    <span class="n">log_level</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"LOG_LEVEL"</span><span class="p">,</span> <span class="s2">"INFO"</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+<span class="linenos">38</span>        <span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%(message)s</span><span class="s2">"</span><span class="p">,</span>
+<span class="linenos">39</span>        <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+<span class="linenos">40</span>        <span class="n">level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span>
+<span class="linenos">41</span>        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">42</span>    <span class="p">)</span>
+<span class="linenos">43</span>    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+<span class="linenos">44</span>    <span class="n">structlog</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+<span class="linenos">45</span>        <span class="n">processors</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">46</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">filter_by_level</span><span class="p">,</span>
+<span class="linenos">47</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">add_logger_name</span><span class="p">,</span>
+<span class="linenos">48</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">add_log_level</span><span class="p">,</span>
+<span class="linenos">49</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">PositionalArgumentsFormatter</span><span class="p">(),</span>
+<span class="linenos">50</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">TimeStamper</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s2">"iso"</span><span class="p">),</span>
+<span class="linenos">51</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">StackInfoRenderer</span><span class="p">(),</span>
+<span class="linenos">52</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">format_exc_info</span><span class="p">,</span>
+<span class="linenos">53</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">UnicodeDecoder</span><span class="p">(),</span>
+<span class="linenos">54</span>            <span class="n">custom_serializer_processor</span><span class="p">,</span>
+<span class="linenos">55</span>            <span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">ConsoleRenderer</span><span class="p">(</span>
+<span class="linenos">56</span>                <span class="n">colors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exception_formatter</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">RichTracebackFormatter</span><span class="p">()</span>
+<span class="linenos">57</span>            <span class="p">),</span>
+<span class="linenos">58</span>        <span class="p">],</span>
+<span class="linenos">59</span>        <span class="n">context_class</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+<span class="linenos">60</span>        <span class="n">logger_factory</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">LoggerFactory</span><span class="p">(),</span>
+<span class="linenos">61</span>        <span class="n">wrapper_class</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">BoundLogger</span><span class="p">,</span>
+<span class="linenos">62</span>        <span class="n">cache_logger_on_first_use</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">63</span>    <span class="p">)</span>
+</pre></div>
+
+                </div>
+            </details>
+
+        </main>
+    </div>
+
+    <script>
+        function toggleAllCards(expand) {
+            const cards = document.querySelectorAll('details.file-card');
+            cards.forEach(card => {
+                card.open = expand;
+            });
+        }
+
+        window.addEventListener('beforeprint', () => {
+            toggleAllCards(true);
+        });
+    </script>
+</body>
+</html>

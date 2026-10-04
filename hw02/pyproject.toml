@@ -3,7 +3,7 @@
 [project]
 name = "hw02"
 version = "0.1.0"
-description = "My new homework assignment."
+description = "Interweaving Spirals"
 readme = "README.md"
 authors = [
     { name = "Zidane Karim", email = "zidane.karim@cooper.edu" }

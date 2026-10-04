@@ -4,8 +4,12 @@ import matplotlib.style
 import jax.numpy as jnp
 import numpy as np
 import structlog
-from sklearn.linear_model import LogisticRegression # this was on the docs so I included just in case
-from sklearn.inspection import DecisionBoundaryDisplay # custom prediction functions for grids
+from sklearn.linear_model import (
+    LogisticRegression,
+)  # this was on the docs so I included just in case
+from sklearn.inspection import (
+    DecisionBoundaryDisplay,
+)  # custom prediction functions for grids
 
 from .config import PlottingSettings
 from .data import Data
@@ -27,10 +31,10 @@ plt.rcParams["svg.fonttype"] = "none"
 
 
 def plot_training_samples(
-    model: MLP,
+    model,
     data: Data,
     settings: PlottingSettings,
-    instance: str, 
+    instance: str,
 ):
 
     log.info("Plotting decision boundary")
@@ -41,19 +45,19 @@ def plot_training_samples(
     h = ax.set_ylabel("x2", labelpad=10)
     h.set_rotation(0)
 
-
     clf = SK_NNXClassifier(model)
 
     clf.fit(np.asarray(data.X), np.asarray(data.Y))
 
     display = DecisionBoundaryDisplay.from_estimator(
-        clf, np.asarray(data.X),
+        clf,
+        np.asarray(data.X),
         response_method="predict_proba",
-        class_of_interest=1, # P(t=1 | x)
+        class_of_interest=1,  # P(t=1 | x)
         alpha=0.5,
         grid_resolution=300,
-        cmap="RdBu",#red blue
-        ax=ax, # same plot? 
+        cmap="RdBu",  # red blue
+        ax=ax,  # same plot?
     )
 
     ax.scatter(
@@ -67,7 +71,6 @@ def plot_training_samples(
 
     plt.tight_layout()
     plt.title(instance)
-
 
     settings.output_dir.mkdir(parents=True, exist_ok=True)
     svg_path = settings.output_dir / f"decision_boundary_{instance}.svg"
@@ -87,22 +90,24 @@ def plot_extrapolation(model, data, settings, instance):
     h = ax.set_ylabel("x2", labelpad=10)
     h.set_rotation(0)
 
-
     clf = SK_NNXClassifier(model)
 
     clf.fit(np.asarray(data.X), np.asarray(data.Y))
 
     clf_extended = np.max(np.abs(data.X)) * 2
-    points = np.array([[-clf_extended, -clf_extended], [clf_extended, clf_extended]]) # 2x2
+    points = np.array(
+        [[-clf_extended, -clf_extended], [clf_extended, clf_extended]]
+    )  # 2x2
 
     display = DecisionBoundaryDisplay.from_estimator(
-        clf, points,
+        clf,
+        points,
         response_method="predict_proba",
-        class_of_interest=1, # P(t=1 | x)
+        class_of_interest=1,  # P(t=1 | x)
         alpha=0.5,
         grid_resolution=300,
-        cmap="RdBu",#red blue
-        ax=ax, # same plot? 
+        cmap="RdBu",  # red blue
+        ax=ax,  # same plot?
     )
 
     ax.scatter(
@@ -117,43 +122,9 @@ def plot_extrapolation(model, data, settings, instance):
     plt.tight_layout()
     plt.title(f"{instance} Extrapolation")
 
-
     settings.output_dir.mkdir(parents=True, exist_ok=True)
     svg_path = settings.output_dir / f"decision_boundary_{instance}_extrapolation.svg"
     pdf_path = settings.output_dir / f"decision_boundary_{instance}_extrapolation.pdf"
-    plt.savefig(svg_path)
-    plt.savefig(pdf_path)
-    plt.close(fig)
-    log.info("Saved plot", path=str(svg_path))
-
-
-
-def plot_fit(
-    model: NNXLinearModel,
-    data: Data,
-    settings: PlottingSettings,
-):
-    """Plots the linear fit and saves it to a file."""
-    log.info("Plotting fit")
-    fig, ax = plt.subplots(1, 1, figsize=settings.figsize, dpi=settings.dpi)
-
-    ax.set_title("Linear fit")
-    ax.set_xlabel("x")
-    ax.set_ylim(0, np.amax(data.y) * 1.5)
-    h = ax.set_ylabel("y", labelpad=10)
-    h.set_rotation(0)
-
-    xs = np.linspace(0, 1, 10)
-    xs = xs[:, np.newaxis]
-    ax.plot(
-        xs, np.squeeze(model(jnp.asarray(xs))), "-", np.squeeze(data.x), data.y, "o"
-    )
-
-    plt.tight_layout()
-
-    settings.output_dir.mkdir(parents=True, exist_ok=True)
-    svg_path = settings.output_dir / "fit.svg"
-    pdf_path = settings.output_dir / "fit.pdf"
     plt.savefig(svg_path)
     plt.savefig(pdf_path)
     plt.close(fig)

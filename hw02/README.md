@@ -1,3 +1,3 @@
 # hw02
 
-My new homework assignment.
+Interweaving Spirals: Decision Boundaries

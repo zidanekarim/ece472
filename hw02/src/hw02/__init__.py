@@ -28,7 +28,7 @@ def main() -> None:
     #     weights=np_rng.integers(low=0, high=5, size=(settings.data.num_features)),
     #     bias=2,
     # )
-    #log.debug("Data generating model", model=data_generating_model)
+    # log.debug("Data generating model", model=data_generating_model)
 
     data = Data(
         noise=settings.data.sigma_noise,
@@ -39,18 +39,16 @@ def main() -> None:
     hidden_layer_width = 64
     data_x, data_y = data.X, data.Y
     model1 = MLP(
-        num_inputs=2,             # x1, x2
-        num_outputs=2,            #
+        num_inputs=2,  # x1, x2
+        num_outputs=2,  #
         num_hidden_layers=num_hidden_layers,
-        hidden_layer_width=hidden_layer_width, 
+        hidden_layer_width=hidden_layer_width,
         hidden_activation=nnx.gelu,
         output_activation=nnx.identity,
         rngs=nnx.Rngs(params=model_key),
     )
 
-
-
-    #log.debug("Initial model", model=model.model)
+    # log.debug("Initial model", model=model.model)
 
     optimizer1 = nnx.Optimizer(
         model1, optax.adam(settings.training.learning_rate), wrt=nnx.Param
@@ -58,18 +56,14 @@ def main() -> None:
 
     train(model1, optimizer1, data, settings.training, np_rng)
 
-    #log.debug("Trained model", model=model.model)
+    # log.debug("Trained model", model=model.model)
     plot_training_samples(model1, data, settings.plotting, "MLP")
 
-
-
-
-
     model2 = SwiGLUMLP(
-        num_inputs=2,             # x1, x2
-        num_outputs=2,            #
+        num_inputs=2,  # x1, x2
+        num_outputs=2,  #
         num_hidden_layers=num_hidden_layers,
-        hidden_layer_width=hidden_layer_width, 
+        hidden_layer_width=hidden_layer_width,
         output_activation=nnx.identity,
         rngs=nnx.Rngs(params=model_key),
     )
@@ -88,7 +82,9 @@ def main() -> None:
     print(
         """
         Explanation of cartesian boundary failure:
-        
+        Models parameterized on cartesian coordinates "abandon" the spiral structure shape
+        soon after they exit the training envelope. This is because we directly fit onto x1,x2 coordinates. Even though pi exists, the model doesn't really have a concept of periodicity (e.g. 4pi rotates to 2pi)
+        If we used purely sin or cos as points, the model could continue to model circular features since the radius would repeat as theta keeps circling around, but since it is cartesian the model tries to match its closest previous points
         """
     )
     # if settings.data.num_features == 1:

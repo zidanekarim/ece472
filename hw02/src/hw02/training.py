@@ -8,13 +8,12 @@ from .config import TrainingSettings
 from .data import Data
 from .model import NNXLinearModel
 import optax
+
 log = structlog.get_logger()
 
 
 @nnx.jit
-def train_step(
-    model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
-):
+def train_step(model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray):
     """Performs a single training step."""
 
     def loss_fn(model):

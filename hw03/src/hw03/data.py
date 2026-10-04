@@ -5,10 +5,14 @@ import numpy as np
 
 def preprocess(batch):
     images = [np.array(img, dtype=np.float32) for img in batch["image"]]
-    
+
     images = np.stack(images, axis=0)
-    images = np.expand_dims(images, axis=-1)  # add channel dimension for grayscale images, since our flax conv wants format: batch, hieght, width, channels
-    images = images / 255.0  # we normalize bc the pixel values are between 0 and 255, and we want them to be between 0 and 1. this is usual for image data when taking from huggingface or similar  
+    images = np.expand_dims(
+        images, axis=-1
+    )  # add channel dimension for grayscale images, since our flax conv wants format: batch, hieght, width, channels
+    images = (
+        images / 255.0
+    )  # we normalize bc the pixel values are between 0 and 255, and we want them to be between 0 and 1. this is usual for image data when taking from huggingface or similar
 
     labels = np.array(batch["label"], dtype=np.int32)
     return {"image": images, "label": labels}
@@ -21,6 +25,7 @@ def load_mnist_dataset():
 
     return train_data, validation_data
 
+
 @dataclass
 class Data:
     """Handles generation of synthetic data for linear regression."""
@@ -29,11 +34,15 @@ class Data:
 
     def __post_init__(self):
         self.train_data, self.validation_data = load_mnist_dataset()
-        self.train_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
-        self.validation_data.set_format(type="numpy", columns=["image", "label"]) # numpy technique to speed computation, nothing crazy
+        self.train_data.set_format(
+            type="numpy", columns=["image", "label"]
+        )  # numpy technique to speed computation, nothing crazy
+        self.validation_data.set_format(
+            type="numpy", columns=["image", "label"]
+        )  # numpy technique to speed computation, nothing crazy
 
-        #self.train_images = self.train_data["image"]
-        #self.train_labels = self.train_data["label"]
+        # self.train_images = self.train_data["image"]
+        # self.train_labels = self.train_data["label"]
         batch = self.train_data[:]
         self.train_images = np.asarray(batch["image"], dtype=np.float32)
         self.train_labels = np.asarray(batch["label"], dtype=np.int32)

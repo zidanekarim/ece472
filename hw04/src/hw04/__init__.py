@@ -43,6 +43,7 @@ def main() -> None:
     # log.debug("Data generating model", model=data_generating_model)
 
     data = Data(batch_size=settings.training.batch_size)
+    data_no_augmentation = Data(batch_size=settings.training.batch_size, augmentation=False)
 
     model = Classifier(
         input_channels=3,  # 1 MNIST, 3 CIFAR for the increased input info
@@ -53,13 +54,27 @@ def main() -> None:
         rngs=nnx.Rngs(params=model_key),
     )
 
+    model2 = Classifier(
+            input_channels=3,  # 1 MNIST, 3 CIFAR for the increased input info
+            layer_channels=[32, 64, 128],
+            strides=[1, 2, 2],  # originally [1,1], which produced 91.2%
+            num_classes=10,  # 10 classes cifar-10
+            num_groups=8, # small common factor of the layer channels
+            residual=False,
+            rngs=nnx.Rngs(params=model_key),
+        )
+
     learning_rate = optax_learning_rate_schedule(total_steps=settings.training.num_iters, base_learning_rate=settings.training.learning_rate)
 
     optimizer = nnx.Optimizer(
         model, optax.adamw(learning_rate=learning_rate, weight_decay=0.0001), wrt=nnx.Param # I switched to adamw here to boost by a couple percentage points
     )
 
-    train(model, optimizer, data, settings.training, np_rng)
+    optimizer2 = nnx.Optimizer(
+        model, optax.adamw(learning_rate=settings.training.learning_rate, weight_decay=0.0001), wrt=nnx.Param # I switched to adamw here to boost by a couple percentage points
+    )
+
+    history = train(model, optimizer, data, settings.training, np_rng)
 
     # log.debug("Trained model", model=model.model)
 

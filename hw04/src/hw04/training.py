@@ -35,15 +35,38 @@ def train(
     np_rng: np.random.Generator,
 ) -> None:
     log.info("Starting training", **settings.model_dump())
+
+    history = {
+        "step": [],
+        "loss": [],
+        "eval_step": [],
+        "eval_accuracy": [],
+    }
+
+
+
     bar = trange(settings.num_iters)
     for i in bar:
         x_np, y_np = data.get_batch(np_rng, settings.batch_size)
         x, y = jnp.asarray(x_np), jnp.asarray(y_np)
 
         loss = train_step(model, optimizer, x, y)
+
+
+        if i % 50 == 0:
+            loss_val = float(loss)
+            history["step"].append(i)
+            history["loss"].append(loss_val)
+        if i % 200 == 0:
+            accuracy = evaluate(model, data.test_images, data.test_labels)
+            history["eval_step"].append(i)
+            history["eval_accuracy"].append(accuracy)
+
+
         bar.set_description(f"Loss @ {i} => {loss:.6f}")
         bar.refresh()
     log.info("Training finished")
+    return history
 
 
 """Evaluation logic to get test accuracy"""

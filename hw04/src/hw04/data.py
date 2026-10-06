@@ -109,6 +109,7 @@ def augment(images: np.ndarray, rng: np.random.Generator) -> np.ndarray:
 class Data:
     batch_size: int
     data_dir: str = "data/cifar-10-batches-py"
+    augmentation: bool
 
     def __post_init__(self):
         (self.train_images, self.train_labels), (
@@ -125,7 +126,7 @@ class Data:
         choices = rng.choice(self.index, size=batch_size, replace=False)
         batch_x = self.train_images[choices].copy()
         batch_y = self.train_labels[choices]
-
-        batch_x = augment(batch_x, rng)
+        if self.augmentation:
+            batch_x = augment(batch_x, rng)
 
         return batch_x, batch_y

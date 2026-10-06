@@ -47,6 +47,7 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
             output_channels: list[int],
             strides: int,
             num_groups: int,
+            residual: bool=True,
             *,
             rngs):
         self.strides = (strides, strides)
@@ -61,7 +62,7 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
         self.group_norm1 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
         self.group_norm2 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
 
-        if self.strides[0] != 1 or input_channels != output_channels:
+        if self.residual and (self.strides[0] != 1 or input_channels != output_channels):
             self.shortcut = Conv2d(
                 in_features=input_channels,
                 out_features=output_channels,
@@ -86,11 +87,12 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
         out = self.conv_layer2(out)
         out = self.group_norm2(out)
 
-        if self.shortcut is not None:
-            identity = self.shortcut(identity)
-            identity = self.shortcut_norm(identity)
-        return nnx.relu(out + identity)
-
+        if self.residual:
+            if self.shortcut is not None:
+                identity = self.shortcut(identity)
+                identity = self.shortcut_norm(identity)
+            return nnx.relu(out + identity)
+        return nnx.relu(out) # :/ no usage of identity mappings in deep residual networks (he et. al 2016)
 
 
 
@@ -129,6 +131,7 @@ class Classifier(nnx.Module):
         strides: list[int],
         num_classes: int,
         num_groups: int,
+        residual: bool=True,
         *,
         rngs,
     ):
@@ -142,16 +145,18 @@ class Classifier(nnx.Module):
                     output_channels=out_channel,
                     strides=stride,
                     num_groups=num_groups,
+                    residual=self.residual,
                     rngs=rngs,
                 )
             )
 
-            self.blocks.append(
+            self.blocks.append( # THIS SECOND RESNET BLOCK is what pushes across  75-79% accuracy straight to 85%
                 ResidualBlock(
                     input_channels=out_channel,
                     output_channels=out_channel,
                     strides=1,
                     num_groups=num_groups,
+                    residual=self.residual,
                     rngs=rngs,
                 )
             )

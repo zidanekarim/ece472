@@ -45,28 +45,28 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
     def __init__(self,
             input_channels: int,
             output_channels: list[int],
-            strides: list[int],
+            strides: int,
             num_groups: int,
             *,
             rngs):
-        self.strides = strides
+        self.strides = (strides, strides)
         self.input_channels = input_channels
         self.output_channels = output_channels
 
         self.conv_layer1 = Conv2d(in_features=input_channels, out_features=output_channels,  
-                                  kernel_size=(3,3), strides=strides, padding="SAME", use_bias=False, rngs=rngs)
+                                  kernel_size=(3,3), strides=self.strides, padding="SAME", use_bias=False, rngs=rngs)
         self.conv_layer2 = Conv2d(in_features=output_channels, out_features=output_channels, 
-                                          kernel_size=(3,3), strides=strides, padding="SAME", use_bias=False, rngs=rngs)
+                                          kernel_size=(3,3), strides=(1, 1), padding="SAME", use_bias=False, rngs=rngs)
 
         self.group_norm1 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
         self.group_norm2 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
 
-        if strides[0] != 1 or input_channels != output_channels:
+        if self.strides[0] != 1 or input_channels != output_channels:
             self.shortcut = Conv2d(
                 in_features=input_channels,
                 out_features=output_channels,
                 kernel_size=(1, 1),
-                strides=strides,
+                strides=self.strides,
                 padding="SAME",
                 use_bias=False,
                 rngs=rngs,
@@ -83,8 +83,8 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
         out = self.conv_layer1(x)
         out = self.group_norm1(out)
         out = nnx.relu(out)
-        out = self.conv2(out)
-        out = self.norm2(out)
+        out = self.conv_layer2(out)
+        out = self.group_norm2(out)
 
         if self.shortcut is not None:
             identity = self.shortcut(identity)
@@ -103,7 +103,7 @@ class Conv2d(nnx.Module):
         kernel_size,
         strides,
         padding,
-        use_bias,
+        use_bias, 
         *,
         rngs,
     ):
@@ -138,9 +138,9 @@ class Classifier(nnx.Module):
         for out_channel, stride in zip(layer_channels, strides, strict=True): # whichever smaller
             self.blocks.append(
                 ResidualBlock(
-                    in_channels=self.input_channels ,
-                    out_channels=out_channel,
-                    stride=stride,
+                    input_channels=self.input_channels ,
+                    output_channels=out_channel,
+                    strides=stride,
                     num_groups=num_groups,
                     rngs=rngs,
                 )

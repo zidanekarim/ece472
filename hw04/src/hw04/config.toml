@@ -4,12 +4,12 @@ random_seed = 0xc61dd8fc
 [data]
 num_features = 1
 num_samples = 50
-sigma_noise = 0.5
+sigma_noise = 0.1
 
 [training]
-batch_size = 16
-num_iters = 300
-learning_rate = 0.1
+batch_size = 64
+num_iters = 11700 # 50000 training images / 64 * 15, rounded down
+learning_rate = 0.001
 
 [plotting]
 output_dir = "artifacts"

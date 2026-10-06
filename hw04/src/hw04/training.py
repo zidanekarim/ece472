@@ -26,6 +26,7 @@ def train_step(model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray):
     return loss
 
 
+
 def train(
     model,
     optimizer: nnx.Optimizer,
@@ -48,34 +49,34 @@ def train(
 """Evaluation logic to get test accuracy"""
 # just copy the training logic but against validation
 
-
 @nnx.jit
-def eval_step(model: nnx.Module, x: jnp.ndarray, y: jnp.ndarray):
+def eval_step(
+    model: nnx.Module, x: jnp.ndarray, y: jnp.ndarray
+) -> tuple[jnp.ndarray, jnp.ndarray]:
+    """Single evaluation batch step."""
     logits = model(x)
     predicted_classes = jnp.argmax(logits, axis=-1)
     correct_count = jnp.sum(predicted_classes == y)
     return correct_count, x.shape[0]
 
 
-def evaluate(model: nnx.Module, test_dataset, batch_size: int = 256) -> float:
+def evaluate(
+    model: nnx.Module,
+    test_images: np.ndarray,
+    test_labels: np.ndarray,
+    batch_size: int = 256,
+) -> float:
     total_correct = 0
     total_samples = 0
+    num_samples = len(test_images)
 
-    num_samples = len(test_dataset)
     for start_idx in range(0, num_samples, batch_size):
         end_idx = min(start_idx + batch_size, num_samples)
-        batch = test_dataset[start_idx:end_idx]
-
-        x = jnp.asarray(batch["image"], dtype=jnp.float32)
-        if x.ndim == 3:
-            x = jnp.expand_dims(x, axis=-1)
-
-        y = jnp.asarray(batch["label"])
+        x = jnp.asarray(test_images[start_idx:end_idx], dtype=jnp.float32)
+        y = jnp.asarray(test_labels[start_idx:end_idx], dtype=jnp.int32)
 
         correct, count = eval_step(model, x, y)
         total_correct += int(correct)
         total_samples += int(count)
 
-    accuracy = total_correct / total_samples
-    return accuracy
-         
+    return total_correct / total_samples

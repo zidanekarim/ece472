@@ -7,9 +7,9 @@ num_samples = 50
 sigma_noise = 0.1
 
 [training]
-batch_size = 64
-num_iters = 11700 # 50000 training images / 64 * 15, rounded down
-learning_rate = 0.001
+batch_size = 32
+num_iters = 23000 # 50000 training images / 64 * 15, rounded down
+learning_rate = 0.0015
 
 [plotting]
 output_dir = "artifacts"

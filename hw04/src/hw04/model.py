@@ -145,6 +145,16 @@ class Classifier(nnx.Module):
                     rngs=rngs,
                 )
             )
+
+            self.blocks.append(
+                ResidualBlock(
+                    input_channels=out_channel,
+                    output_channels=out_channel,
+                    strides=1,
+                    num_groups=num_groups,
+                    rngs=rngs,
+                )
+            )
             self.input_channels = out_channel
 
         # Linear classification head mapping the final channels to num_classes

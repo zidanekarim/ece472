@@ -3,7 +3,7 @@
 [project]
 name = "hw04"
 version = "0.1.0"
-description = "My new homework assignment."
+description = "CIFAR-10 Classifier"
 readme = "README.md"
 authors = [
     { name = "Zidane Karim", email = "zidane.karim@cooper.edu" }
@@ -21,6 +21,10 @@ dependencies = [
     "flax>=0.11.2",
     "optax>=0.2.4",
     "scikit-learn",
+    "datasets>=5.1.0",
+    "pandas>=3.0.6",
+    "tabulate>=0.10.0",
+    "orbax>=0.1.9",
 ]
 
 [project.scripts]

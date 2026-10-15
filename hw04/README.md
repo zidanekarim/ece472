@@ -1,3 +1,3 @@
 # hw04
 
-My new homework assignment.
+CIFAR-10 Classifier (84-85% Accuracy)

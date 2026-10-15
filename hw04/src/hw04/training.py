@@ -26,14 +26,13 @@ def train_step(model, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray):
     return loss
 
 
-
 def train(
     model,
     optimizer: nnx.Optimizer,
     data: Data,
     settings: TrainingSettings,
     np_rng: np.random.Generator,
-) -> None:
+):
     log.info("Starting training", **settings.model_dump())
 
     history = {
@@ -43,15 +42,12 @@ def train(
         "eval_accuracy": [],
     }
 
-
-
     bar = trange(settings.num_iters)
     for i in bar:
         x_np, y_np = data.get_batch(np_rng, settings.batch_size)
         x, y = jnp.asarray(x_np), jnp.asarray(y_np)
 
         loss = train_step(model, optimizer, x, y)
-
 
         if i % 50 == 0:
             loss_val = float(loss)
@@ -62,7 +58,6 @@ def train(
             history["eval_step"].append(i)
             history["eval_accuracy"].append(accuracy)
 
-
         bar.set_description(f"Loss @ {i} => {loss:.6f}")
         bar.refresh()
     log.info("Training finished")
@@ -72,10 +67,9 @@ def train(
 """Evaluation logic to get test accuracy"""
 # just copy the training logic but against validation
 
+
 @nnx.jit
-def eval_step(
-    model: nnx.Module, x: jnp.ndarray, y: jnp.ndarray
-) -> tuple[jnp.ndarray, jnp.ndarray]:
+def eval_step(model: nnx.Module, x, y) -> tuple[jnp.ndarray, jnp.ndarray]:
     """Single evaluation batch step."""
     logits = model(x)
     predicted_classes = jnp.argmax(logits, axis=-1)

@@ -96,4 +96,3 @@ class AppSettings(BaseSettings):
 def load_settings() -> AppSettings:
     """Load application settings."""
     return AppSettings()
-                 

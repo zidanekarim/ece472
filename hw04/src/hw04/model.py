@@ -18,7 +18,7 @@ class GroupNorm(nnx.Module):
     def __init__(
         self,
         num_groups: int,
-        num_channels: int,
+        num_channels,
         epsilon: float = 1e-5,
         *,
         rngs: nnx.Rngs,
@@ -26,8 +26,12 @@ class GroupNorm(nnx.Module):
         self.num_groups = num_groups
         self.num_channels = num_channels
         self.epsilon = epsilon
-        self.scale = nnx.Param(jnp.ones((1, 1, 1, num_channels), dtype=jnp.float32)) # (1, 1, 1, C) like paper
-        self.bias = nnx.Param(jnp.zeros((1, 1, 1, num_channels), dtype=jnp.float32)) # biases init to zero
+        self.scale = nnx.Param(
+            jnp.ones((1, 1, 1, num_channels), dtype=jnp.float32)
+        )  # (1, 1, 1, C) like paper
+        self.bias = nnx.Param(
+            jnp.zeros((1, 1, 1, num_channels), dtype=jnp.float32)
+        )  # biases init to zero
 
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
         B, H, W, C = x.shape
@@ -36,33 +40,57 @@ class GroupNorm(nnx.Module):
         mean = jnp.mean(x_grouped, axis=-1, keepdims=True)
         variance = jnp.var(x_grouped, axis=-1, keepdims=True)
 
-        x_norm = (x_grouped - mean) / jnp.sqrt(variance + self.epsilon) # formula
-        x_norm = x_norm.reshape((B, H, W, C)) # standard group norm 
+        x_norm = (x_grouped - mean) / jnp.sqrt(variance + self.epsilon)  # formula
+        x_norm = x_norm.reshape((B, H, W, C))  # standard group norm
 
         return x_norm * self.scale.value + self.bias.value
 
-class ResidualBlock(nnx.Module): # consulting previous resnet assignment
-    def __init__(self,
-            input_channels: int,
-            output_channels: list[int],
-            strides: int,
-            num_groups: int,
-            residual: bool=True,
-            *,
-            rngs):
+
+class ResidualBlock(nnx.Module):  # consulting previous resnet assignment
+    def __init__(
+        self,
+        input_channels,
+        output_channels,
+        strides,
+        num_groups,
+        residual: bool = True,
+        *,
+        rngs,
+    ):
         self.strides = (strides, strides)
         self.input_channels = input_channels
         self.output_channels = output_channels
+        self.residual = residual
 
-        self.conv_layer1 = Conv2d(in_features=input_channels, out_features=output_channels,  
-                                  kernel_size=(3,3), strides=self.strides, padding="SAME", use_bias=False, rngs=rngs)
-        self.conv_layer2 = Conv2d(in_features=output_channels, out_features=output_channels, 
-                                          kernel_size=(3,3), strides=(1, 1), padding="SAME", use_bias=False, rngs=rngs)
+        self.conv_layer1 = Conv2d(
+            in_features=input_channels,
+            out_features=output_channels,
+            kernel_size=(3, 3),
+            strides=self.strides,
+            padding="SAME",
+            use_bias=False,
+            rngs=rngs,
+        )
+        self.conv_layer2 = Conv2d(
+            in_features=output_channels,
+            out_features=output_channels,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding="SAME",
+            use_bias=False,
+            rngs=rngs,
+        )
 
-        self.group_norm1 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
-        self.group_norm2 = GroupNorm(num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs)
+        self.group_norm1 = GroupNorm(
+            num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs
+        )
+        self.group_norm2 = GroupNorm(
+            num_groups=num_groups, num_channels=output_channels, epsilon=1e-5, rngs=rngs
+        )
 
-        if self.residual and (self.strides[0] != 1 or input_channels != output_channels):
+        if self.residual and (
+            self.strides[0] != 1 or input_channels != output_channels
+        ):
             self.shortcut = Conv2d(
                 in_features=input_channels,
                 out_features=output_channels,
@@ -76,11 +104,11 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
                 num_groups=num_groups, num_channels=output_channels, rngs=rngs
             )
         else:
-            self.shortcut = None # bc we only do this if dimensions change
+            self.shortcut = None  # bc we only do this if dimensions change
             self.shortcut_norm = None
 
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        identity = x # we are going to using an identity skip connection #awesomesauce
+        identity = x  # we are going to using an identity skip connection #awesomesauce
         out = self.conv_layer1(x)
         out = self.group_norm1(out)
         out = nnx.relu(out)
@@ -88,13 +116,13 @@ class ResidualBlock(nnx.Module): # consulting previous resnet assignment
         out = self.group_norm2(out)
 
         if self.residual:
-            if self.shortcut is not None:
+            if self.shortcut is not None and self.shortcut_norm is not None:
                 identity = self.shortcut(identity)
                 identity = self.shortcut_norm(identity)
             return nnx.relu(out + identity)
-        return nnx.relu(out) # :/ no usage of identity mappings in deep residual networks (he et. al 2016)
-
-
+        return nnx.relu(
+            out
+        )  # :/ no usage of identity mappings in deep residual networks (he et. al 2016)
 
 
 class Conv2d(nnx.Module):
@@ -105,7 +133,7 @@ class Conv2d(nnx.Module):
         kernel_size,
         strides,
         padding,
-        use_bias, 
+        use_bias,
         *,
         rngs,
     ):
@@ -131,17 +159,20 @@ class Classifier(nnx.Module):
         strides: list[int],
         num_classes: int,
         num_groups: int,
-        residual: bool=True,
+        residual: bool = True,
         *,
         rngs,
     ):
         self.blocks = nnx.List([])
         self.input_channels = input_channels
+        self.residual = residual
 
-        for out_channel, stride in zip(layer_channels, strides, strict=True): # whichever smaller
+        for out_channel, stride in zip(
+            layer_channels, strides, strict=True
+        ):  # whichever smaller
             self.blocks.append(
                 ResidualBlock(
-                    input_channels=self.input_channels ,
+                    input_channels=self.input_channels,
                     output_channels=out_channel,
                     strides=stride,
                     num_groups=num_groups,
@@ -150,7 +181,7 @@ class Classifier(nnx.Module):
                 )
             )
 
-            self.blocks.append( # THIS SECOND RESNET BLOCK is what pushes across  75-79% accuracy straight to 85%
+            self.blocks.append(  # THIS SECOND RESNET BLOCK is what pushes across  75-79% accuracy straight to 85%
                 ResidualBlock(
                     input_channels=out_channel,
                     output_channels=out_channel,
@@ -166,6 +197,7 @@ class Classifier(nnx.Module):
         self.linear_layer = NNXLinearModel(
             rngs, in_features=layer_channels[-1], out_features=num_classes
         )
+
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
         for block in self.blocks:
             x = block(x)
@@ -173,7 +205,6 @@ class Classifier(nnx.Module):
             x, axis=(1, 2)
         )  # global average pooling so model is invariant to input resolution
         return self.linear_layer(x)
-
 
 
 class NNXLinearModel(nnx.Module):
@@ -200,4 +231,3 @@ class NNXLinearModel(nnx.Module):
     #         weights=np.array(self.w.value).reshape([self.num_features]),
     #         bias=float(np.array(self.b.value).squeeze()),
     #     )
-     

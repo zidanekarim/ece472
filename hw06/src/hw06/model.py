@@ -6,34 +6,50 @@ import numpy as np
 from flax import nnx
 
 
-@dataclass
-class LinearModel:
-    """Represents a simple linear model."""
+class LayerNorm(nnx.Module):
 
-    weights: np.ndarray
-    bias: float
+    def __init__(self, d_model, *, eps=1e-6):
+        self.eps = eps
+        self.gamma = nnx.Param(jnp.ones((d_model,)))
+        self.beta = nnx.Param(jnp.zeros((d_model,)))
+
+    def __call__(self, x: jax.Array):
+        mean = jnp.mean(x, axis=-1, keepdims=True)
+        variance = jnp.var(x, axis=-1, keepdims=True)
+        normalized_x = (x - mean) / jnp.sqrt(variance + self.eps)
+        return self.gamma.value * normalized_x + self.beta.value
 
 
-class NNXLinearModel(nnx.Module):
-    """A Flax NNX module for a linear regression model."""
+class FFN(nnx.Module):
+    def __init__(self, d_model, d_ff, *, rngs, use_bias):
+        self.d_model = d_model
+        self.d_ff = d_ff
+        self.use_bias = use_bias
 
-    def __init__(self, *, rngs: nnx.Rngs, num_features: int):
-        self.num_features = num_features
-        key = rngs.params()
-        self.w = nnx.Param(jax.random.normal(key, (self.num_features, 1)))
-        self.b = nnx.Param(jnp.zeros((1, 1)))
-
-    def __call__(self, x: jax.Array) -> jax.Array:
-        """Predicts the output for a given input."""
-        return jnp.squeeze(x @ self.w.value + self.b.value, axis=-1)
-
-    @property
-    def model(self) -> LinearModel:
-        """Returns the underlying simple linear model."""
-        return LinearModel(
-            weights=np.array(self.w.value).reshape([self.num_features]),
-            bias=float(np.array(self.b.value).squeeze()),
+        scale = 1.0 / jnp.sqrt(d_model)
+        self.w1 = nnx.Param(
+            jax.random.normal(rngs.params(), (d_model, d_ff)) * scale
         )
+        self.w2 = nnx.Param(
+            jax.random.normal(rngs.params(), (d_ff, d_model)) * scale
+        )
+
+        if self.use_bias:
+            self.b1 = nnx.Param(jnp.zeros((d_ff,)))
+            self.b2 = nnx.Param(jnp.zeros((d_model,)))
+        else:
+            self.b1 = None
+            self.b2 = None
+
+    def __call__(self, x: jax.Array):
+        x = jnp.einsum('...qd,df->...qf', x, self.w1.value)
+        if self.use_bias:
+            x += self.b1.value
+        x = jax.nn.relu(x)
+        x = jnp.einsum('...qf,fd->...qd', x, self.w2.value)
+        if self.use_bias:
+            x += self.b2.value
+        return x
 
 
 class Attention(nnx.Module):
@@ -119,29 +135,39 @@ class MultiHeadAttention(nnx.Module):
         return output
 
 
+
+
+
+
+
+
+
 class TransformerBlock(nnx.Module):
     """
     y = x + Attention(LayerNorm(x))
     Output = y + FFN(LayerNorm(y))
     """
 
-    def __init__(self, d_model, num_heads, d_ff, *, rngs, use_bias):
+    def __init__(self, d_model, num_heads, d_ff, *, rngs, use_bias, eps=1e-5):
         self.d_model = d_model
         self.num_heads = num_heads
         self.d_ff = d_ff
         self.use_bias = use_bias
+        self.eps = eps
+
+        self.layer1 = LayerNorm(d_model, eps=eps)
+        self.layer2 = LayerNorm(d_model, eps=eps)
 
         self.mha = MultiHeadAttention(d_model, num_heads, rngs=rngs, use_bias=use_bias)
-        self.ffn_w1 = nnx.Param(
-            jax.random.normal(rngs.params(), (d_model, d_ff)) * (1.0 / jnp.sqrt(d_model))
-        )
-        self.ffn_w2 = nnx.Param(
-            jax.random.normal(rngs.params(), (d_ff, d_model)) * (1.0 / jnp.sqrt(d_ff))
-        )
+        self.ffn = FFN(d_model, d_ff, rngs=rngs, use_bias=use_bias)
 
-        if self.use_bias:
-            self.ffn_b1 = nnx.Param(jnp.zeros((d_ff,)))
-            self.ffn_b2 = nnx.Param(jnp.zeros((d_model,)))
-        else:
-            self.ffn_b1 = None
-            self.ffn_b2 = None
+    def __call__(self, x: jax.Array, mask: jax.Array | None = None, causal: bool = False):
+        x_norm = self.layer1(x)
+        attn_output = self.mha(x_norm, x_norm, x_norm, mask=mask, causal=causal)
+        y = x + attn_output
+
+        y_norm = self.layer2(y)
+        ffn_output = self.ffn(y_norm)
+        output = y + ffn_output
+
+        return output

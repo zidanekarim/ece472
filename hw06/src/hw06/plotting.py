@@ -7,7 +7,7 @@ import structlog
 
 from .config import PlottingSettings
 from .data import Data
-from .model import LinearModel, NNXLinearModel
+from .model import TransformerBlock 
 
 log = structlog.get_logger()
 

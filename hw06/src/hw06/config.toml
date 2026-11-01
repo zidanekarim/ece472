@@ -9,9 +9,16 @@ sigma_noise = 0.5
 [training]
 batch_size = 16
 num_iters = 300
-learning_rate = 0.1
+learning_rate = 0.0015
 
 [plotting]
 output_dir = "artifacts"
 figsize = [5, 3]
 dpi = 200
+
+[model]
+d_model = 128
+d_ff = 512
+num_heads = 8
+use_bias = true
+causal = false

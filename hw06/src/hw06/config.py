@@ -54,6 +54,16 @@ class PlottingSettings(BaseModel):
     dpi: int = Field(default=200, gt=0, description="Dots per inch for saved figures")
     output_dir: Path = Path("artifacts")
 
+class ModelSettings(BaseModel):
+
+    d_model: int = Field(default=32, gt=0, description="dimensionality of the model")
+    d_ff: int = Field(
+        default=64, gt=0, description="ffn dimensionality of the model"
+    )
+    num_heads: int = Field(default=4, gt=0, description="num attn heads")
+    use_bias: bool = Field(default=True, description="bias?")
+    causal: bool = Field(default=False, description="causal?")
+
 
 class AppSettings(BaseSettings):
     """Main application settings."""
@@ -63,6 +73,7 @@ class AppSettings(BaseSettings):
     data: DataSettings = DataSettings()
     training: TrainingSettings = TrainingSettings()
     plotting: PlottingSettings = PlottingSettings()
+    model: ModelSettings = ModelSettings()
 
     model_config = SettingsConfigDict(
         toml_file=_find_config_toml(),

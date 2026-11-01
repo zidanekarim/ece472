@@ -2,14 +2,15 @@ from dataclasses import InitVar, dataclass, field
 
 import numpy as np
 
-from .model import LinearModel
+from .model import TransformerBlock
+
 
 
 @dataclass
 class Data:
     """Handles generation of synthetic data for linear regression."""
 
-    model: LinearModel
+    model: TransformerBlock
     rng: InitVar[np.random.Generator]
     num_features: int
     num_samples: int

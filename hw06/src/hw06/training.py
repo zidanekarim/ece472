@@ -6,32 +6,33 @@ from tqdm import trange
 
 from .config import TrainingSettings
 from .data import Data
-from .model import NNXLinearModel
-
+from .model import TransformerBlock
+import optax
 log = structlog.get_logger()
 
 
 @nnx.jit
 def train_step(
-    model: NNXLinearModel, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray
+    model: TransformerBlock, optimizer: nnx.Optimizer, x: jnp.ndarray, y: jnp.ndarray, causal: bool = False
 ):
     """Performs a single training step."""
 
-    def loss_fn(model: NNXLinearModel):
-        y_hat = model(x)
-        return 0.5 * jnp.mean((y_hat - y) ** 2)
+    def loss_fn(model: TransformerBlock):
+        logits = model(x, causal=causal)
+        return jnp.mean(optax.softmax_cross_entropy_with_integer_labels(logits, y))
 
     loss, grads = nnx.value_and_grad(loss_fn)(model)
-    optimizer.update(model, grads)  # In-place update of model parameters
+    optimizer.update(model, grads)  # In-place parameter update
     return loss
 
 
 def train(
-    model: NNXLinearModel,
+    model: TransformerBlock,
     optimizer: nnx.Optimizer,
     data: Data,
     settings: TrainingSettings,
     np_rng: np.random.Generator,
+    causal: bool = False
 ) -> None:
     """Train the model using SGD."""
     log.info("Starting training", **settings.model_dump())
@@ -40,7 +41,7 @@ def train(
         x_np, y_np = data.get_batch(np_rng, settings.batch_size)
         x, y = jnp.asarray(x_np), jnp.asarray(y_np)
 
-        loss = train_step(model, optimizer, x, y)
+        loss = train_step(model, optimizer, x, y, causal=causal)
 
         bar.set_description(f"Loss @ {i} => {loss:.6f}")
         bar.refresh()

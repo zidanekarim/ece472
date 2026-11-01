@@ -53,7 +53,7 @@ class FFN(nnx.Module):
 
 
 class Attention(nnx.Module):
-    def __call__(self, q: jax.Array, k: jax.Array, v: jax.Array, mask: jax.Array | None, causal: bool=False):
+    def __call__(self, q: jax.Array, k: jax.Array, v: jax.Array, mask: jax.Array | None, causal: bool=False, return_weights: bool=False):
         d_k = q.shape[-1] # dimension of the key
         t_q = q.shape[-2] # sequence length of the query
         t_k = k.shape[-2] # sequence length of the key
@@ -69,6 +69,8 @@ class Attention(nnx.Module):
             scores = jnp.where(mask, scores, -1e9) # apply mask
 
         weights = nnx.softmax(scores, axis=-1)
+        if return_weights:
+            return jnp.einsum('...qk,...vd->...qd', weights, v), weights
         return jnp.einsum('...qk,...vd->...qd', weights, v)
 
 
@@ -107,7 +109,7 @@ class MultiHeadAttention(nnx.Module):
             self.b_o = None
         self.attention = Attention() # initialize the attention module
 
-    def __call__(self, q: jax.Array, k: jax.Array, v: jax.Array, mask: jax.Array | None = None, causal: bool = False):
+    def __call__(self, q: jax.Array, k: jax.Array, v: jax.Array, mask: jax.Array | None = None, causal: bool = False, return_weights: bool = False):
         # Linear projections
         q_proj = jnp.einsum('...qd,df->...qf', q, self.w_q.value)
         k_proj = jnp.einsum('...kd,df->...kf', k, self.w_k.value)
@@ -118,12 +120,15 @@ class MultiHeadAttention(nnx.Module):
             k_proj += self.b_k.value
             v_proj += self.b_v.value
 
-        q_proj = q_proj.reshape(q.shape[:-1] + (self.num_heads, self.head_dim))
-        k_proj = k_proj.reshape(k.shape[:-1] + (self.num_heads, self.head_dim))
-        v_proj = v_proj.reshape(v.shape[:-1] + (self.num_heads, self.head_dim))
+        q_proj = q_proj.reshape(q.shape[:-1] + (self.num_heads, self.head_dim)).swapaxes(-3, -2) # because we want the shape to be (batch, num_heads, seq_len, head_dim)
+        k_proj = k_proj.reshape(k.shape[:-1] + (self.num_heads, self.head_dim)).swapaxes(-3, -2)
+        v_proj = v_proj.reshape(v.shape[:-1] + (self.num_heads, self.head_dim)).swapaxes(-3, -2)
 
         # Attention(Q W_i^Q, K W_i^K, V W_i^V)
         attn_output = self.attention(q_proj, k_proj, v_proj, mask=mask, causal=causal)
+
+        # revert 
+        attn_output = attn_output.swapaxes(-3, -2).reshape(attn_output.shape[:-2] + (self.d_model,)) # this because we want the shape to be (batch, seq_len, d_model)
 
         # MultiHead(Q, K, V) = Concat(head_1, ..., head_h) W^O
         attn_output = attn_output.reshape(attn_output.shape[:-2] + (self.d_model,))

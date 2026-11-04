@@ -9,9 +9,11 @@ from flax import nnx
 from .logging import configure_logging
 from .model import Attention, MultiHeadAttention, TransformerBlock
 from pathlib import Path
+
 log = structlog.get_logger()
 
-# implementation of final test is based on this 
+
+# implementation of final test is based on this
 class Toy1BlockLM(nnx.Module):
     def __init__(
         self,
@@ -42,13 +44,15 @@ class Toy1BlockLM(nnx.Module):
         )
         self.lm_head = nnx.Param(
             jax.random.normal(rngs.params(), (d_model, vocab_size)) * scale
-        ) # this is the final linear layer that maps the hidden states to logits over the vocabulary
+        )  # this is the final linear layer that maps the hidden states to logits over the vocabulary
 
     def __call__(self, x_idx: jax.Array) -> jax.Array:
         seq_len = x_idx.shape[-1]
         embeddings = self.tok_embed.value[x_idx] + self.pos_embed.value[:seq_len]
-        hidden = self.block(embeddings, causal=True) 
-        return jnp.einsum("...td,dv->...tv", hidden, self.lm_head.value) # einsum to compute logits over the vocabulary for each position in the sequence
+        hidden = self.block(embeddings, causal=True)
+        return jnp.einsum(
+            "...td,dv->...tv", hidden, self.lm_head.value
+        )  # einsum to compute logits over the vocabulary for each position in the sequence
 
     """This would have gone in __init__ if it were used, but it's not. All functionality comes from evaluate.py"""
 
@@ -127,17 +131,19 @@ def eval_attention_weight_invariants() -> bool:
     k = jax.random.normal(kk, (1, seq_len, d_k))
 
     scores = jnp.einsum("...qd,...kd->...qk", q, k) / jnp.sqrt(d_k)
-    causal_mask = jnp.tril(jnp.ones((seq_len, seq_len))) 
-    scores_masked = jnp.where(causal_mask, scores, -1e9) # 
+    causal_mask = jnp.tril(jnp.ones((seq_len, seq_len)))
+    scores_masked = jnp.where(causal_mask, scores, -1e9)  #
     weights = jax.nn.softmax(scores_masked, axis=-1)
 
     row_sums = jnp.sum(weights, axis=-1)
-    row_sum_diff = float(jnp.max(jnp.abs(row_sums - 1.0))) 
-    row_sums_ok = row_sum_diff < 1e-6 # see below
+    row_sum_diff = float(jnp.max(jnp.abs(row_sums - 1.0)))
+    row_sums_ok = row_sum_diff < 1e-6  # see below
 
     upper_mask = jnp.triu(jnp.ones((seq_len, seq_len), dtype=bool), k=1)
-    max_causal_weight = float(jnp.max(weights[:, upper_mask])) 
-    causal_zeros_ok = max_causal_weight < 1e-6 # 1e-6 bc jax.nn.softmax may not produce exact zeros due to numerical precision
+    max_causal_weight = float(jnp.max(weights[:, upper_mask]))
+    causal_zeros_ok = (
+        max_causal_weight < 1e-6
+    )  # 1e-6 bc jax.nn.softmax may not produce exact zeros due to numerical precision
 
     passed = row_sums_ok and causal_zeros_ok
     log.info(
@@ -153,7 +159,7 @@ def eval_shape_and_splitting_invariance() -> bool:
     log.info("Running Test 4: Shape and Splitting Invariance Test")
     test_configs = [
         (1, 4, 16, 2),
-        (2, 19, 32, 2), # only D/H matters
+        (2, 19, 32, 2),  # only D/H matters
     ]
 
     all_passed = True
@@ -162,7 +168,7 @@ def eval_shape_and_splitting_invariance() -> bool:
         block = TransformerBlock(
             d_model=d, num_heads=h, d_ff=2 * d, rngs=rngs, use_bias=True
         )
-        x = jax.random.normal(jax.random.key(7), (b, t, d)) # 🤪
+        x = jax.random.normal(jax.random.key(7), (b, t, d))  # 🤪
         out = block(x, causal=True)
 
         if out.shape != (b, t, d):
@@ -174,12 +180,14 @@ def eval_shape_and_splitting_invariance() -> bool:
 
 
 def eval_toy_autoregressive_convergence() -> bool:
-    
+
     log.info("Running Test 5: Toy Autoregressive Convergence Test")
     rngs = nnx.Rngs(params=jax.random.key(8))
     seq = jnp.array([1, 2, 3, 4, 1, 2, 3, 4], dtype=jnp.int32)
     x = seq[:-1][None, :]  # [1, 2, 3, 4, 1, 2, 3] -> (1, 7)
-    y = seq[1:][None, :]   # [2, 3, 4, 1, 2, 3, 4] -> (1, 7) same shape as x, shifted by one position
+    y = seq[1:][
+        None, :
+    ]  # [2, 3, 4, 1, 2, 3, 4] -> (1, 7) same shape as x, shifted by one position
 
     model = Toy1BlockLM(
         vocab_size=6, seq_len=8, d_model=32, num_heads=4, d_ff=64, rngs=rngs
@@ -200,7 +208,9 @@ def eval_toy_autoregressive_convergence() -> bool:
     for _ in range(100):
         final_loss = float(step(model, optimizer, x, y))
 
-    converged = final_loss < 1e-3 and final_loss < initial_loss # ok 1e-6 was too harsh here but I'll count this as a pass
+    converged = (
+        final_loss < 1e-3 and final_loss < initial_loss
+    )  # ok 1e-6 was too harsh here but I'll count this as a pass
     log.info(
         "Toy autoregressive convergence results",
         initial_loss=initial_loss,
@@ -208,6 +218,7 @@ def eval_toy_autoregressive_convergence() -> bool:
         converged=converged,
     )
     return converged
+
 
 def main() -> None:
     """CLI entry point for homework evaluation."""
@@ -234,7 +245,7 @@ def main() -> None:
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
     table_path = artifacts_dir / "results.md"
-    
+
     lines = [
         "# HW06 Verification Results\n",
         "| Test Name | Status |",
@@ -242,10 +253,8 @@ def main() -> None:
     ]
     for name, status in results.items():
         lines.append(f"| {name} | **{status}** |")
-    
+
     table_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     log.info("Saved verification results table", path=str(table_path))
     if not all(status == "PASSED" for status in results.values()):
         raise SystemExit(1)
-
-    

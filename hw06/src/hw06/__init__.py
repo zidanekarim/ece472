@@ -8,7 +8,6 @@ from .config import load_settings
 from .logging import configure_logging
 
 
-
 def main() -> None:
     """CLI entry point."""
     settings = load_settings()
@@ -50,7 +49,7 @@ def main() -> None:
     # train(model, optimizer, data, settings.training, np_rng, causal=settings.model.causal)
 
     # log.debug("Trained model", model=model.model)
-    
+
     """
     This file is essentially unused. All functionality comes from evaluate
     """

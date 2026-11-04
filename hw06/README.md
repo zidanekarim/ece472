@@ -1,3 +1,4 @@
 # hw06
 
-My new homework assignment.
+Transformer Implementation
+Functionality comes from `just eval hw06`

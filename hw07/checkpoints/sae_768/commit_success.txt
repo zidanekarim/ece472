@@ -1,0 +1,1 @@
+Checkpoint commit was successful to /home/zidane.karim/School/ece472/hw07/checkpoints/sae_768
